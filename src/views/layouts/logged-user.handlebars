@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Import Google Icon Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat Rooms!</title>
+</head>
+
+<body>
+
+    <div class="navbar-fixed">
+        <nav class="indigo accent-3">
+            <div class="nav-wrapper container">
+                <a href="/" class="brand-logo">Chat</a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="#!"><i class="material-icons">search</i></a></li>
+                    {{#if chatOn }}
+                    <li><a href="#!" class="volver-btn"><i class="material-icons">arrow_downward</i></a></li>
+                    {{/if}}
+                    <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a></li>
+                </ul>
+                <ul class="right hide-on-large-only">
+                    {{#if chatOn}}
+                    <li><a href="#!" class="volver-btn right"><i class="material-icons">arrow_downward</i></a></li>
+                    {{/if}}
+                    <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <ul id="slide-out" class="sidenav">
+        <li>
+            <div class="user-view">
+                <div class="background">
+                    <img src="https://images.pexels.com/photos/1159343/pexels-photo-1159343.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
+                </div>
+                <a href="#user"><img class="circle" src="https://images.pexels.com/photos/2156311/pexels-photo-2156311.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></a>
+                <a href="#name"><span class="white-text name">{{userData.name}}</span></a>
+                <a href="#email"><span class="white-text email">{{userData.email}}</span></a>
+            </div>
+        </li>
+        <li><a class="waves-effect" href="/logout"><i class="material-icons">person_outline</i>Logout</a></li>
+    </ul>
+
+    <div id="preloader" class="bottom">
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+    </div>
+
+    {{{body}}}
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="application/javascript" src="/js/index.js"></script>
+
+</body>
+
+</html>

@@ -1,2 +1,2 @@
 # Chat
-Chat web utilizando Node.JS
+Chat web utilizando Node.JS.
