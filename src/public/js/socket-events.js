@@ -16,10 +16,9 @@ botonesVolver.forEach(b => {
 });
 
 socket.on('recibir mensaje', data => {
-
     let mensajeHTML = `<div class="card">
                         <div class="card-content">
-                            <p><strong>User name</strong></p>
+                            <p><strong>${socket.user.name}</strong></p>
                             <p>${data.msj}</p>
                         </div>
                     </div>`;
