@@ -18,19 +18,20 @@
     <div class="navbar-fixed">
         <nav class="indigo accent-3">
             <div class="nav-wrapper container">
-                <a href="/" class="brand-logo">Chat</a>
+                <ul class="left">
+                    <li><a href="" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a></li>
+                </ul>
+                <a href="/" class="brand-logo center">Chat</a>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="#!"><i class="material-icons">search</i></a></li>
                     {{#if chatOn }}
-                    <li><a href="#!" class="volver-btn"><i class="material-icons">arrow_downward</i></a></li>
+                    <li><a href="" class="volver-btn"><i class="material-icons">arrow_downward</i></a></li>
                     {{/if}}
-                    <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a></li>
                 </ul>
                 <ul class="right hide-on-large-only">
                     {{#if chatOn}}
-                    <li><a href="#!" class="volver-btn right"><i class="material-icons">arrow_downward</i></a></li>
+                    <li><a href="" class="volver-btn right"><i class="material-icons">arrow_downward</i></a></li>
                     {{/if}}
-                    <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a></li>
                 </ul>
             </div>
         </nav>
