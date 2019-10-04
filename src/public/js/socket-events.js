@@ -25,7 +25,7 @@ socket.on('recibir mensaje', data => {
 
     mensajes.innerHTML += mensajeHTML;
     irAbajo();
-})
+});
 
 formMsj.addEventListener('submit', e => {
     e.preventDefault();
@@ -34,4 +34,4 @@ formMsj.addEventListener('submit', e => {
         msj: mensaje
     });
     msjInput.value = '';
-})
+});

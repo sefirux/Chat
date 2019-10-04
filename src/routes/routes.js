@@ -16,24 +16,26 @@ router.get('/', (req, res) => {
 
 router.get('/signup', (req, res) => {
     res.render('login', {
-        titulo: "Signup",
+        title: "Signup",
         action: "/signup",
-        name: true
+        name: true,
+        error: req.session.signupError
     });
+    req.session.signupError = null;
 });
 
 router.post('/signup', (req, res) => {
-    const data = req.body;
-    const newUser = new User(data.name, data.email, data.password);
+    const newUser = new User(req.body);
     chatdb.saveUser(newUser, (err, dbRes) => {
         if (dbRes) {
             req.session.userData = {
-                id: dbRes.id,
+                id: dbRes._id,
                 name: dbRes.name,
                 email: dbRes.email
             };
             res.redirect('/');
         } else {
+            req.session.signupError = err;
             res.redirect('/signup');
         }
     });
@@ -41,23 +43,25 @@ router.post('/signup', (req, res) => {
 
 router.get('/signin', (req, res) => {
     res.render('login', {
-        titulo: "Signin",
-        action: "/signin"
+        title: "Signin",
+        action: "/signin",
+        error: req.session.signinError
     });
+    req.session.signinError = null;
 });
 
 router.post('/signin', (req, res) => {
-    console.log(req.body);
-    const data = req.body;
-    chatdb.findUser(new User(data.name, data.email, data.password), (err, dbRes) => {
+    const user = new User(req.body);
+    chatdb.findUser(user, (err, dbRes) => {
         if (dbRes) {
             req.session.userData = {
-                id: dbRes.id,
+                id: dbRes._id,
                 name: dbRes.name,
                 email: dbRes.email
             };
             res.redirect('/');
         } else {
+            req.session.signinError = err;
             res.redirect('/signin');
         }
     });
@@ -68,16 +72,32 @@ router.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-router.get('/chat', (req, res) => {
+router.get('/room', (req, res) => {
     if(req.session.userData){
-        res.render('chat', {
+        res.render('room', {
             userData: req.session.userData,
             layout: 'logged-user',
-            chatOn: true
+            roomOn: true
         });
     } else {
         res.redirect('/');
     }
 });
+
+router.get('/rooms', (req, res) => {
+    if(req.session.userData){
+        res.render('rooms');
+    }
+});
+
+router.post('/new-room', (req, res) => {
+    const userData = req.session.userData;
+    const newRoomData = req.body;
+    if(userData){
+        if(newRoomData){
+
+        }
+    }
+})
 
 module.exports = router;

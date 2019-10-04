@@ -1,8 +1,10 @@
 const mongoClient = require('mongodb').MongoClient;
 
+const ERR_USER_DOES_NOT_EXIST = 'This user does not exist or incorrect password';
+const ERR_USER_ALREADY_EXIST = 'User already exists';
+
 const dbPort = 27017;
 const dbName = 'chatdb';
-const usersCollectionName = 'users';
 const dbURL = `mongodb://localhost:${dbPort}`;
 const dbConfig = {
     useNewUrlParser: true,
@@ -10,18 +12,24 @@ const dbConfig = {
     family: 4
 };
 
+const usersCollectionName = 'users';
+const chatCollectionName = 'chats';
+
 const findUser = (userData, callBack) => {
-    mongoClient.connect(dbURL, dbConfig, async (err, client) => {
+    mongoClient.connect(dbURL, dbConfig, (err, client) => {
         if (err) {
             console.error(err);
             callBack(err, null);
         } else {
             const chatdb = client.db(dbName);
             const userCollection = chatdb.collection(usersCollectionName);
-            userCollection.findOne({ email: userData.email, pass: userData.pass })
+            userCollection.findOne({
+                    email: userData.email,
+                    password: userData.password
+                })
                 .then(user => {
                     if (!user) {
-                        callBack('No exist.', null);
+                        callBack(ERR_USER_DOES_NOT_EXIST, null);
                     } else {
                         callBack(null, user);
                     }
@@ -34,28 +42,39 @@ const findUser = (userData, callBack) => {
 };
 
 const saveUser = (user, callBack, update) => {
-    mongoClient.connect(dbURL, dbConfig, async (err, client) => {
+    mongoClient.connect(dbURL, dbConfig, (err, client) => {
         if (err) {
             console.error(err);
             callBack(err, null);
         } else {
             const chatdb = client.db(dbName);
             const userCollection = chatdb.collection(usersCollectionName);
-            const oldUser = await userCollection.findOne({ email: user.email });
-            if (oldUser && !update) {
-                callBack('User exist.', null);
-            } else {
-                userCollection.insertOne(user);
-                userCollection.findOne(user)
-                    .then(user => {
-                        callBack(null, user)
-                    })
-                    .catch(err => callBack(err, null))
-            }
-
-            client.close();
+            userCollection.findOne({email: user.email})
+                .then(oldUser => {
+                    if (oldUser && !update) {
+                        callBack(ERR_USER_ALREADY_EXIST, null);
+                    } else {
+                        userCollection.insertOne(user);
+                        userCollection.findOne(user)
+                            .then(user => callBack(null, user))
+                            .catch(err => callBack(err, null));
+                        client.close();
+                    }
+                })
+                .catch(err => {
+                    callBack(err, null)
+                    client.close();
+                });
         }
     })
+};
+
+const findRoom = (roomData, callBack) => {
+
+};
+
+const saveRoom = (room, callBack, update) => {
+
 };
 
 module.exports = {

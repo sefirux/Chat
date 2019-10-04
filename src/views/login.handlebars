@@ -3,14 +3,14 @@
         <div class="col s12 m6 offset-m3">
             <div class="card-panel hoverable">
                 <div class="card-title center-align">
-                    <h4>{{titulo}}</h4>
+                    <h4>{{title}}</h4>
                 </div>
                 <form action={{action}} method="POST">
                     {{#if name}}
                     <div class="row">
                         <div class="input-field col s12 m12">
                             <input type="text" name="name" id="name">
-                            <label for="name">Nombre</label>
+                            <label for="name">Name</label>
                         </div>
                     </div>
                     {{/if}}
@@ -22,13 +22,13 @@
                     </div>
                     <div class="row">
                         <div class="input-field col s12 m12">
-                            <input type="password" name="password" id="password">
-                            <label for="password">Contraseña</label>
+                            <input type="password" name="password" id="password" autocomplete="off">
+                            <label for="password">Password</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col s12 m12">
-                            <button type="submit" class="btn waves-effect waves-light right blue">Enviar
+                            <button type="submit" class="btn waves-effect waves-light right blue">Submit
                                 <i class="material-icons right">send</i></button>
                         </div>
                     </div>
@@ -37,3 +37,12 @@
         </div>
     </div>
 </div>
+
+{{#if error}}
+<script>
+    window.addEventListener('load', () => {
+        let toastHTML = '<span>{{error}}</span><button class="btn-flat toast-action white-text">Ok</button>';
+        M.toast({ html: toastHTML, classes: 'red animated shake' });
+    });
+</script>
+{{/if}}

@@ -7,7 +7,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
         sessionMiddleware(socket.request, socket.request.res, next);
     });
 
-    socketSession.sockets.on('connection', (socket) => {
+    socketSession.sockets.on('connection', socket => {
 
         msj.forEach(m => {
             socket.emit('recibir mensaje', m);
@@ -25,6 +25,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
             }
         });
     });
+    
     socketSession.sockets.on('enviar mensaje', data => {
         console.log(data);
     });

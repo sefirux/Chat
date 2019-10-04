@@ -6,6 +6,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Import Animated CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
     <link rel="stylesheet" href="/css/styles.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,12 +26,12 @@
                 <a href="/" class="brand-logo center">Chat</a>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="#!"><i class="material-icons">search</i></a></li>
-                    {{#if chatOn }}
+                    {{#if roomOn }}
                     <li><a href="" class="volver-btn"><i class="material-icons">arrow_downward</i></a></li>
                     {{/if}}
                 </ul>
                 <ul class="right hide-on-large-only">
-                    {{#if chatOn}}
+                    {{#if roomOn}}
                     <li><a href="" class="volver-btn right"><i class="material-icons">arrow_downward</i></a></li>
                     {{/if}}
                 </ul>
@@ -47,6 +49,8 @@
                 <a href="#email"><span class="white-text email">{{userData.email}}</span></a>
             </div>
         </li>
+        <li><a href="/room/new" class="waves-effect"><i class="material-icons">group_add</i>Create room</a></li>
+        <li><div class="divider"></div></li>
         <li><a class="waves-effect" href="/logout"><i class="material-icons">person_outline</i>Logout</a></li>
     </ul>
 
