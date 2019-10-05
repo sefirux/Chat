@@ -3,6 +3,7 @@ class Room {
         this.name = data.name ? data.name : `Room-${(new Date).toString()}`;
         this.adminId = adminId ? adminId : null;
         this.membersId = data.membersId ? data.membersId : [];
+        this.description = data.description ? data.description : '';
         this.messages = [];
         if(this.adminId){
             this.membersId.push(this.adminId);

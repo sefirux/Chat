@@ -113,7 +113,6 @@ const findUserById = (id, callBack) => {
 const findUsersByNameRegex = (string, maxUsers, callBack) => {
     mongoClient.connect(dbURL, dbConfig, async (err, client) => {
         if (err) {
-            console.error(err);
             callBack(err, null);
         } else {
             const chatdb = client.db(dbName);

@@ -106,7 +106,7 @@ router.post('/room/new', (req, res) => {
     chatdb.saveRoom(roomData, (err, newRoom) => {
         if (!err) {
             console.log(newRoom);
-            res.redirect(`/room/id=${newRoom._id}`);
+            res.redirect(`/room/${newRoom._id}`);
         } else {
             console.log(err);
             res.redirect('/room/new');
