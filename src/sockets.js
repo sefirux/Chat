@@ -1,8 +1,8 @@
 const chatdb = require('./chatdb');
+const Message = require('./models/Message');
 
 const MAX_SEARCH_USERS = 10;
-
-let msj = [];
+const MAX_LOAD_MESSAGE = 20;
 
 const ChatSocketIO = (server, sessionMiddleware) => {
     const socketSession = require('socket.io')(server);
@@ -11,25 +11,25 @@ const ChatSocketIO = (server, sessionMiddleware) => {
     });
 
     socketSession.sockets.on('connection', socket => {
+        if (socket.request.session.roomData) {
+            const roomId = socket.request.session.roomData.id;
 
-        msj.forEach(m => {
-            socket.emit('recibir mensaje', m);
-        });
+            socket.join(roomId);
 
-        socket.on('enviar mensaje', data => {
-            if (data.msj.length > 0) {
-                const userData = socket.request.session.userData;
-                data.userData = {
-                    name: userData.name,
-                    email: userData.email
+            socket.to(roomId).on('send message', msg => {
+                if (msg.length > 0) {
+                    const message = new Message(msg, socket.request.session.userData);
+                    chatdb.addMesaggeToRoom(message, roomId, (err, res) => {
+                        if (err) console.error(err);
+                    })
                 }
-                msj.push(data);
-                socketSession.sockets.emit('recibir mensaje', data);
-            }
-        });
+            });
+            console.log(`User join to room; id: ${roomId}`);
+        }
+
 
         socket.on('search users', data => {
-            chatdb.findUsersByNameRegex(data, MAX_SEARCH_USERS,(err, users) => {
+            chatdb.findUsersByNameRegex(data, MAX_SEARCH_USERS, (err, users) => {
                 users.forEach(user => {
                     socket.emit('user search completed', {
                         _id: user._id,
@@ -42,15 +42,19 @@ const ChatSocketIO = (server, sessionMiddleware) => {
 
         socket.on('add user to room', data => {
             chatdb.findUserById(data.userId, (err, user) => {
-                if(user){
+                if (user) {
                     chatdb.findRoom(data.roomId, (err, room) => {
-                        if(room){
-                            if(!room.membersId.include(user._id)){
+                        if (room) {
+                            if (!room.membersId.include(user._id)) {
                                 room.membersId.push(user._id);
-                                chatdb.updateRoom({_id: room._id}, room, (err, res) => {
-                                    if(res){
-                                        chatdb.updateUser({_id: user._id}, user, (err, res) => {
-                                            if(res){
+                                chatdb.updateRoom({
+                                    _id: room._id
+                                }, room, (err, res) => {
+                                    if (res) {
+                                        chatdb.updateUser({
+                                            _id: user._id
+                                        }, user, (err, res) => {
+                                            if (res) {
                                                 console.log(`User ${user.name} added to ${room.name} room.`);
                                             }
                                         })

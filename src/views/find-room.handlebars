@@ -1,16 +1,17 @@
 <main class="container">
     <div class="row">
-        {{#each room}}
+        {{#each rooms}}
         <div class="col s12 m4 xl3">
             <div class="card">
                 <div class="card-image">
-                    <img src="{{room.img}}">
-                    <span class="card-title">{{room.name}}</span>
-                    <a class="btn-floating halfway-fab waves-effect waves-light green"><i
+                    <img src="{{img}}">
+                    <span class="card-title">{{name}}</span>
+                    <a href="/rooms/room/{{_id}}" class="btn-floating halfway-fab waves-effect waves-light green"><i
                             class="material-icons">add</i></a>
                 </div>
                 <div class="card-content">
-                    <p>{{room.description}}</p>
+                    <span class="card-title">{{name}}</span>
+                    <p>{{description}}</p>
                 </div>
             </div>
         </div>

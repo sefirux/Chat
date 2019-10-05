@@ -76,19 +76,7 @@ router.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-router.get('/room', (req, res) => {
-    if (req.session.userData) {
-        res.render('room', {
-            userData: req.session.userData,
-            layout: 'logged-user',
-            roomOn: true
-        });
-    } else {
-        res.redirect('/');
-    }
-});
-
-router.get('/room/new', (req, res) => {
+router.get('/rooms/new', (req, res) => {
     if (req.session.userData) {
         res.render('new-room', {
             userData: req.session.userData,
@@ -100,26 +88,30 @@ router.get('/room/new', (req, res) => {
     }
 });
 
-router.post('/room/new', (req, res) => {
+router.post('/rooms/new', (req, res) => {
     const roomData = new Room(req.body, req.session.userData.id);
-    console.log(roomData);
     chatdb.saveRoom(roomData, (err, newRoom) => {
         if (!err) {
             console.log(newRoom);
-            res.redirect(`/room/${newRoom._id}`);
+            res.redirect(`/rooms/room/${newRoom._id}`);
         } else {
             console.log(err);
-            res.redirect('/room/new');
+            res.redirect('/rooms/new');
         }
     });
 });
 
-router.get('/room/:id', (req, res) => {
+router.get('/rooms/room/:id', (req, res) => {
     if (req.session.userData) {
         const roomId = req.params.id;
+        console.log(req.params)
         if(roomId){
             chatdb.findRoomById(roomId, (err, room) => {
                 if(room){
+                    req.session.roomData = {
+                        id: room._id,
+                        name: room.name
+                    };
                     res.render('room', {
                         userData: req.session.userData,
                         layout: 'logged-user',
@@ -138,13 +130,19 @@ router.get('/room/:id', (req, res) => {
     }
 });
 
-router.get('/room/find', (req, res) => {
+router.get('/rooms/find', (req, res) => {
     if (req.session.userData) {
-        res.render('find-room', {
-            userData: req.session.userData,
-            layout: 'logged-user',
-            roomOn: false
-        });
+        chatdb.findRooms(null, 10, (err, rooms) => {
+            if(rooms){
+                res.render('find-room', {
+                    userData: req.session.userData,
+                    rooms: rooms,
+                    layout: 'logged-user',
+                    roomOn: false
+                });
+            }
+        })
+        
     } else {
         res.redirect('/');
     }

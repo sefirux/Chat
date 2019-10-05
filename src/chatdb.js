@@ -178,6 +178,10 @@ const findRoomById = (id, callBack) => {
     })
 };
 
+const findRooms = (data, limit, callBack) => {
+    findElements(data, roomsCollectionName, callBack, limit);
+}
+
 const saveRoom = (room, callBack) => {
     findElement({
         name: room.name
@@ -196,6 +200,27 @@ const updateRoom = (roomData, newValues, callBack) => {
     updateElement(roomData, newValues, roomsCollectionName, callBack);
 };
 
+const addMesaggeToRoom = (message, roomId, callBack) => {
+    mongoClient.connect(dbURL, dbConfig, (err, client) => {
+        if (err) {
+            callBack(err, null);
+        } else {
+            const chatdb = client.db(dbName);
+            const collection = chatdb.collection(roomsCollectionName);
+            collection.updateOne({
+                    _id: new ObjectId(roomId)
+                }, {
+                    $push: {
+                        messages: message
+                    }
+                })
+                .then(res => callBack(null, SUCCESS))
+                .catch(err => callBack(err, null));
+            client.close();
+        }
+    });
+};
+
 module.exports = {
     saveUser,
     updateUser,
@@ -205,6 +230,8 @@ module.exports = {
     findElements,
     saveRoom,
     findRoom,
+    findRooms,
     findRoomById,
-    updateRoom
+    updateRoom,
+    addMesaggeToRoom
 };

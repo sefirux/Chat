@@ -1,9 +1,9 @@
 const formMsj = document.getElementById('chat-input');
-const msjInput = document.getElementById('nuevo-mensaje');
-const mensajes = document.getElementById('chat-mensajes');
+const msgInput = document.getElementById('new-message');
+const messages = document.getElementById('chat-messages');
 const socket = io();
 
-const irAbajo = () => {
+const bottom = () => {
     window.scrollTo(0,document.body.scrollHeight);
 }
 
@@ -11,27 +11,26 @@ const botonesVolver = document.querySelectorAll('.volver-btn');
 botonesVolver.forEach(b => {
     b.addEventListener('click', e => {
         e.preventDefault();
-        irAbajo();
+        bottom();
     })
 });
 
-socket.on('recibir mensaje', data => {
-    let mensajeHTML = `<div class="card">
+socket.on('receive message', data => {
+    let msgHTML = `<div class="card">
                         <div class="card-content">
-                            <p><strong>${data.userData.name}</strong></p>
-                            <p>${data.msj}</p>
+                            <p><strong>${data.sender}</strong></p>
+                            <p>${data.msg}</p>
                         </div>
                     </div>`;
 
-    mensajes.innerHTML += mensajeHTML;
-    irAbajo();
+    messages.innerHTML += msgHTML;
+    bottom();
 });
 
 formMsj.addEventListener('submit', e => {
     e.preventDefault();
-    let mensaje = msjInput.value;
-    socket.emit('enviar mensaje', {
-        msj: mensaje
-    });
-    msjInput.value = '';
+
+    let msg = msgInput.value;
+    socket.emit('send message', msg);
+    msgInput.value = '';
 });
