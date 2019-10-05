@@ -1,4 +1,7 @@
 const chatdb = require('./chatdb');
+
+const MAX_SEARCH_USERS = 10;
+
 let msj = [];
 
 const ChatSocketIO = (server, sessionMiddleware) => {
@@ -24,8 +27,19 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                 socketSession.sockets.emit('recibir mensaje', data);
             }
         });
+
+        socket.on('search users', data => {
+            chatdb.findUsersByNameRegex(data, MAX_SEARCH_USERS,(err, users) => {
+                users.forEach(user => {
+                    socket.emit('user search completed', {
+                        name: user.name,
+                        email: user.email
+                    });
+                })
+            })
+        });
     });
-    
+
     socketSession.sockets.on('enviar mensaje', data => {
         console.log(data);
     });

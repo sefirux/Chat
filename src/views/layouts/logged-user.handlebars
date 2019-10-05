@@ -21,11 +21,12 @@
         <nav class="indigo accent-3">
             <div class="nav-wrapper container">
                 <ul class="left">
-                    <li><a href="" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a></li>
+                    <li><a href="" data-target="slide-out" class="sidenav-trigger"><i
+                                class="material-icons">menu</i></a></li>
                 </ul>
                 <a href="/" class="brand-logo center">Chat</a>
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="#!"><i class="material-icons">search</i></a></li>
+                    <li><a href="/room/find"><i class="material-icons">search</i></a></li>
                     {{#if roomOn }}
                     <li><a href="" class="volver-btn"><i class="material-icons">arrow_downward</i></a></li>
                     {{/if}}
@@ -42,15 +43,20 @@
         <li>
             <div class="user-view">
                 <div class="background">
-                    <img src="https://images.pexels.com/photos/1159343/pexels-photo-1159343.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
+                    <img
+                        src="https://images.pexels.com/photos/1159343/pexels-photo-1159343.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
                 </div>
-                <a href="#user"><img class="circle" src="https://images.pexels.com/photos/2156311/pexels-photo-2156311.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></a>
+                <a href="#user"><img class="circle"
+                        src="https://images.pexels.com/photos/2156311/pexels-photo-2156311.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"></a>
                 <a href="#name"><span class="white-text name">{{userData.name}}</span></a>
                 <a href="#email"><span class="white-text email">{{userData.email}}</span></a>
             </div>
         </li>
-        <li><a href="/room/new" class="waves-effect"><i class="material-icons">group_add</i>Create room</a></li>
-        <li><div class="divider"></div></li>
+        <li><a href="/room/new" class="waves-effect"><i class="material-icons">create</i>Create room</a></li>
+        <li><a href="/room/find" class="waves-effect"><i class="material-icons">find_in_page</i>Find room</a></li>
+        <li>
+            <div class="divider"></div>
+        </li>
         <li><a class="waves-effect" href="/logout"><i class="material-icons">person_outline</i>Logout</a></li>
     </ul>
 

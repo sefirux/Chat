@@ -84,20 +84,40 @@ router.get('/room', (req, res) => {
     }
 });
 
-router.get('/rooms', (req, res) => {
+router.get('/room', (req, res) => {
     if(req.session.userData){
-        res.render('rooms');
+        res.render('room', {
+            userData: req.session.userData,
+            layout: 'logged-user',
+            roomOn: false
+        });
+    } else {
+        res.redirect('/');
     }
 });
 
-router.post('/new-room', (req, res) => {
-    const userData = req.session.userData;
-    const newRoomData = req.body;
-    if(userData){
-        if(newRoomData){
-
-        }
+router.get('/room/new', (req, res) => {
+    if(req.session.userData){
+        res.render('new-room', {
+            userData: req.session.userData,
+            layout: 'logged-user',
+            roomOn: false
+        });
+    } else {
+        res.redirect('/');
     }
-})
+});
+
+router.get('/room/find', (req, res) => {
+    if(req.session.userData){
+        res.render('find-room', {
+            userData: req.session.userData,
+            layout: 'logged-user',
+            roomOn: false
+        });
+    } else {
+        res.redirect('/');
+    }
+});
 
 module.exports = router;

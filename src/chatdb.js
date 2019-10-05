@@ -41,6 +41,23 @@ const findUser = (userData, callBack) => {
     })
 };
 
+const findUsersByNameRegex = (string, maxUsers, callBack) => {
+    mongoClient.connect(dbURL, dbConfig, async (err, client) => {
+        if (err) {
+            console.error(err);
+            callBack(err, null);
+        } else {
+            const chatdb = client.db(dbName);
+            const userCollection = chatdb.collection(usersCollectionName);
+            userCollection.find({"name": {$regex: `${string}`, $options:"i"}},{name:1})
+                .limit(maxUsers)
+                .toArray((err, users) => callBack(err, users));
+
+            client.close();
+        }
+    })
+};
+
 const saveUser = (user, callBack, update) => {
     mongoClient.connect(dbURL, dbConfig, (err, client) => {
         if (err) {
@@ -79,5 +96,6 @@ const saveRoom = (room, callBack, update) => {
 
 module.exports = {
     saveUser,
-    findUser
+    findUser,
+    findUsersByNameRegex
 };
