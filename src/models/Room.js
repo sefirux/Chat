@@ -1,9 +1,12 @@
 class Room {
-    constructor(data, admin){
+    constructor(data, adminId){
         this.name = data.name ? data.name : `Room-${(new Date).toString()}`;
-        this.admin = admin ? admin : null;
-        this.usersId = data.usersId ? data.usersId : null;
-        this.messages = null;
+        this.adminId = adminId ? adminId : null;
+        this.membersId = data.membersId ? data.membersId : [];
+        this.messages = [];
+        if(this.adminId){
+            this.membersId.push(this.adminId);
+        }
     }
 }
 

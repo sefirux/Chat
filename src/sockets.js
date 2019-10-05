@@ -32,11 +32,35 @@ const ChatSocketIO = (server, sessionMiddleware) => {
             chatdb.findUsersByNameRegex(data, MAX_SEARCH_USERS,(err, users) => {
                 users.forEach(user => {
                     socket.emit('user search completed', {
+                        _id: user._id,
                         name: user.name,
                         email: user.email
                     });
                 })
             })
+        });
+
+        socket.on('add user to room', data => {
+            chatdb.findUserById(data.userId, (err, user) => {
+                if(user){
+                    chatdb.findRoom(data.roomId, (err, room) => {
+                        if(room){
+                            if(!room.membersId.include(user._id)){
+                                room.membersId.push(user._id);
+                                chatdb.updateRoom({_id: room._id}, room, (err, res) => {
+                                    if(res){
+                                        chatdb.updateUser({_id: user._id}, user, (err, res) => {
+                                            if(res){
+                                                console.log(`User ${user.name} added to ${room.name} room.`);
+                                            }
+                                        })
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         });
     });
 

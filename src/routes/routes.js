@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/User');
+const Room = require('../models/Room');
 const chatdb = require('../chatdb');
 
 router.get('/', (req, res) => {
@@ -52,7 +53,10 @@ router.get('/signin', (req, res) => {
 
 router.post('/signin', (req, res) => {
     const user = new User(req.body);
-    chatdb.findUser(user, (err, dbRes) => {
+    chatdb.findUser({
+        email: user.email,
+        password: user.password
+    }, (err, dbRes) => {
         if (dbRes) {
             req.session.userData = {
                 id: dbRes._id,
@@ -73,7 +77,7 @@ router.get('/logout', (req, res) => {
 });
 
 router.get('/room', (req, res) => {
-    if(req.session.userData){
+    if (req.session.userData) {
         res.render('room', {
             userData: req.session.userData,
             layout: 'logged-user',
@@ -84,20 +88,8 @@ router.get('/room', (req, res) => {
     }
 });
 
-router.get('/room', (req, res) => {
-    if(req.session.userData){
-        res.render('room', {
-            userData: req.session.userData,
-            layout: 'logged-user',
-            roomOn: false
-        });
-    } else {
-        res.redirect('/');
-    }
-});
-
 router.get('/room/new', (req, res) => {
-    if(req.session.userData){
+    if (req.session.userData) {
         res.render('new-room', {
             userData: req.session.userData,
             layout: 'logged-user',
@@ -108,8 +100,46 @@ router.get('/room/new', (req, res) => {
     }
 });
 
+router.post('/room/new', (req, res) => {
+    const roomData = new Room(req.body, req.session.userData.id);
+    console.log(roomData);
+    chatdb.saveRoom(roomData, (err, newRoom) => {
+        if (!err) {
+            console.log(newRoom);
+            res.redirect(`/room/id=${newRoom._id}`);
+        } else {
+            console.log(err);
+            res.redirect('/room/new');
+        }
+    });
+});
+
+router.get('/room/:id', (req, res) => {
+    if (req.session.userData) {
+        const roomId = req.params.id;
+        if(roomId){
+            chatdb.findRoomById(roomId, (err, room) => {
+                if(room){
+                    res.render('room', {
+                        userData: req.session.userData,
+                        layout: 'logged-user',
+                        roomData: room,
+                        roomOn: true
+                    });
+                } else {
+                    console.log(err);
+                }
+            });
+        } else {
+            res.redirect('/');
+        }
+    } else {
+        res.redirect('/');
+    }
+});
+
 router.get('/room/find', (req, res) => {
-    if(req.session.userData){
+    if (req.session.userData) {
         res.render('find-room', {
             userData: req.session.userData,
             layout: 'logged-user',

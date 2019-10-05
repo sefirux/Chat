@@ -1,7 +1,10 @@
 const mongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 
 const ERR_USER_DOES_NOT_EXIST = 'This user does not exist or incorrect password';
 const ERR_USER_ALREADY_EXIST = 'User already exists';
+const ERR_ROOM_ALREADY_EXIST = 'Room already exists';
+const SUCCESS = 'Success';
 
 const dbPort = 27017;
 const dbName = 'chatdb';
@@ -13,29 +16,95 @@ const dbConfig = {
 };
 
 const usersCollectionName = 'users';
-const chatCollectionName = 'chats';
+const roomsCollectionName = 'rooms';
 
-const findUser = (userData, callBack) => {
+const findElement = (data, collectionName, callBack) => {
     mongoClient.connect(dbURL, dbConfig, (err, client) => {
         if (err) {
-            console.error(err);
             callBack(err, null);
         } else {
             const chatdb = client.db(dbName);
-            const userCollection = chatdb.collection(usersCollectionName);
-            userCollection.findOne({
-                    email: userData.email,
-                    password: userData.password
-                })
-                .then(user => {
-                    if (!user) {
-                        callBack(ERR_USER_DOES_NOT_EXIST, null);
-                    } else {
-                        callBack(null, user);
-                    }
-                })
+            const collection = chatdb.collection(collectionName);
+            collection.findOne(data)
+                .then(element => callBack(null, element))
                 .catch(err => callBack(err, null));
+            client.close();
+        }
+    })
+};
 
+const findElements = (data, collectionName, callBack, limit) => {
+    mongoClient.connect(dbURL, dbConfig, (err, client) => {
+        if (err) {
+            callBack(err, null);
+        } else {
+            const chatdb = client.db(dbName);
+            const collection = chatdb.collection(collectionName);
+            if (limit) {
+                collection.find(data).limit(limit).toArray((err, elements) => callBack(err, elements));
+            } else {
+                collection.find(data).toArray((err, elements) => callBack(err, elements));
+            }
+            client.close();
+        };
+    });
+};
+
+const saveElement = (element, collectionName, callBack) => {
+    mongoClient.connect(dbURL, dbConfig, (err, client) => {
+        if (err) {
+            callBack(err, null);
+        } else {
+            const chatdb = client.db(dbName);
+            const collection = chatdb.collection(collectionName);
+            collection.insertOne(element);
+            collection.findOne(element)
+                .then(newElement => callBack(null, newElement))
+                .catch(err => callBack(err, null));
+            client.close();
+        }
+    })
+};
+
+const updateElement = (query, newValues, collectionName, callBack) => {
+    mongoClient.connect(dbURL, dbConfig, (err, client) => {
+        if (err) {
+            callBack(err, null);
+        } else {
+            const chatdb = client.db(dbName);
+            const collection = chatdb.collection(collectionName);
+            collection.updateOne(query, {
+                    $set: newValues
+                })
+                .then(res => callBack(null, SUCCESS))
+                .catch(err => callBack(err, null));
+            client.close();
+        }
+    })
+};
+
+const findUser = (userData, callBack) => {
+    findElement(userData, usersCollectionName, (err, user) => {
+        if (!user) {
+            callBack(ERR_USER_DOES_NOT_EXIST, null);
+        } else {
+            callBack(null, user);
+        }
+    });
+};
+
+const findUserById = (id, callBack) => {
+    mongoClient.connect(dbURL, dbConfig, (err, client) => {
+        if (err) {
+            callBack(err, null);
+        } else {
+            const chatdb = client.db(dbName);
+            const collection = chatdb.collection(usersCollectionName);
+            collection.findOne({
+                    _id: new ObjectId(id)
+                })
+                .then(element => callBack(null, element))
+                .catch(err => callBack(err, null));
             client.close();
         }
     })
@@ -49,53 +118,94 @@ const findUsersByNameRegex = (string, maxUsers, callBack) => {
         } else {
             const chatdb = client.db(dbName);
             const userCollection = chatdb.collection(usersCollectionName);
-            userCollection.find({"name": {$regex: `${string}`, $options:"i"}},{name:1})
+            userCollection.find({
+                    "name": {
+                        $regex: `${string}`,
+                        $options: "i"
+                    }
+                }, {
+                    name: 1
+                })
                 .limit(maxUsers)
                 .toArray((err, users) => callBack(err, users));
 
             client.close();
         }
-    })
+    });
 };
 
-const saveUser = (user, callBack, update) => {
+const saveUser = (user, callBack) => {
+    findElement({
+        email: user.email
+    }, usersCollectionName, (err, oldUser) => {
+        if (err) {
+            callBack(err, null);
+        } else if (oldUser) {
+            callBack(ERR_USER_ALREADY_EXIST, null);
+        } else {
+            saveElement(user, usersCollectionName, callBack);
+        }
+    });
+};
+
+const updateUser = (userData, newValues, callBack) => {
+    updateElement(userData, newValues, usersCollectionName, callBack);
+}
+
+const findRoom = (roomData, callBack) => {
+    findElement(roomData, roomsCollectionName, (err, room) => {
+        if (err) {
+            callBack(err, null);
+        } else {
+            callBack(null, room);
+        }
+    });
+};
+
+const findRoomById = (id, callBack) => {
     mongoClient.connect(dbURL, dbConfig, (err, client) => {
         if (err) {
-            console.error(err);
             callBack(err, null);
         } else {
             const chatdb = client.db(dbName);
-            const userCollection = chatdb.collection(usersCollectionName);
-            userCollection.findOne({email: user.email})
-                .then(oldUser => {
-                    if (oldUser && !update) {
-                        callBack(ERR_USER_ALREADY_EXIST, null);
-                    } else {
-                        userCollection.insertOne(user);
-                        userCollection.findOne(user)
-                            .then(user => callBack(null, user))
-                            .catch(err => callBack(err, null));
-                        client.close();
-                    }
+            const collection = chatdb.collection(roomsCollectionName);
+            collection.findOne({
+                    _id: new ObjectId(id)
                 })
-                .catch(err => {
-                    callBack(err, null)
-                    client.close();
-                });
+                .then(element => callBack(null, element))
+                .catch(err => callBack(err, null));
+            client.close();
         }
     })
 };
 
-const findRoom = (roomData, callBack) => {
-
+const saveRoom = (room, callBack) => {
+    findElement({
+        name: room.name
+    }, roomsCollectionName, (err, oldRoom) => {
+        if (err) {
+            callBack(err, null);
+        } else if (oldRoom) {
+            callBack(ERR_ROOM_ALREADY_EXIST, null);
+        } else {
+            saveElement(room, roomsCollectionName, callBack);
+        }
+    });
 };
 
-const saveRoom = (room, callBack, update) => {
-
+const updateRoom = (roomData, newValues, callBack) => {
+    updateElement(roomData, newValues, roomsCollectionName, callBack);
 };
 
 module.exports = {
     saveUser,
+    updateUser,
     findUser,
-    findUsersByNameRegex
+    findUserById,
+    findUsersByNameRegex,
+    findElements,
+    saveRoom,
+    findRoom,
+    findRoomById,
+    updateRoom
 };
