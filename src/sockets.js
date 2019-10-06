@@ -18,7 +18,8 @@ const ChatSocketIO = (server, sessionMiddleware) => {
 
             chatdb.findRoomById(roomId, (err, room) => {
                 if (room) {
-                    room.messages.forEach( message => {
+                    room.messages.forEach(message => {
+                        //message.addressee
                         io.sockets.to(roomId).emit('update room', message);
                     });
                 }

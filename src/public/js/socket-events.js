@@ -20,6 +20,7 @@ socket.on('update room', message => {
                         <div class="card-content">
                             <p><strong>${message.sender.name}</strong></p>
                             <p>${message.msg}</p>
+                            <p class="right"><small>${message.date}</small></p>
                         </div>
                     </div>`;
 
