@@ -207,14 +207,11 @@ const addMesaggeToRoom = (message, roomId, callBack) => {
         } else {
             const chatdb = client.db(dbName);
             const collection = chatdb.collection(roomsCollectionName);
-            collection.updateOne({
-                    _id: new ObjectId(roomId)
-                }, {
-                    $push: {
-                        messages: message
-                    }
+            collection.findOneAndUpdate({_id: new ObjectId(roomId)}, {$push:{messages: message}}, {returnOriginal: false})
+                .then(res =>{
+                    const msg = res.value.messages[res.value.messages.length - 1];
+                    callBack(null, msg);
                 })
-                .then(res => callBack(null, SUCCESS))
                 .catch(err => callBack(err, null));
             client.close();
         }

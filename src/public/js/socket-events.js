@@ -15,22 +15,20 @@ botonesVolver.forEach(b => {
     })
 });
 
-socket.on('receive message', data => {
+socket.on('update room', message => {
     let msgHTML = `<div class="card">
                         <div class="card-content">
-                            <p><strong>${data.sender}</strong></p>
-                            <p>${data.msg}</p>
+                            <p><strong>${message.sender.name}</strong></p>
+                            <p>${message.msg}</p>
                         </div>
                     </div>`;
 
     messages.innerHTML += msgHTML;
     bottom();
-});
+})
 
 formMsj.addEventListener('submit', e => {
     e.preventDefault();
-
-    let msg = msgInput.value;
-    socket.emit('send message', msg);
+    socket.emit('send message', msgInput.value);
     msgInput.value = '';
 });
