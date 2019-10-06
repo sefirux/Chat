@@ -20,7 +20,7 @@ socket.on('update room', message => {
                         <div class="card-content">
                             <p><strong>${message.sender.name}</strong></p>
                             <p>${message.msg}</p>
-                            <p class="right"><small>${message.date}</small></p>
+                            <p class="right"><small>${new Date(message.date).toLocaleString()}</small></p>
                         </div>
                     </div>`;
 
