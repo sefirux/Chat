@@ -1,7 +1,9 @@
 const router = require('express').Router();
+const roomsRouter = require('./rooms');
 const User = require('../models/User');
-const Room = require('../models/Room');
-const chatdb = require('../chatdb');
+const chatdb = require('../libs/chatdb');
+
+router.use('/rooms', roomsRouter);
 
 router.get('/', (req, res) => {
     const userData = req.session.userData;
@@ -20,9 +22,9 @@ router.get('/signup', (req, res) => {
         title: "Signup",
         action: "/signup",
         name: true,
-        error: req.session.signupError
+        error: req.session.error
     });
-    req.session.signupError = null;
+    req.session.error = null;
 });
 
 router.post('/signup', (req, res) => {
@@ -36,7 +38,7 @@ router.post('/signup', (req, res) => {
             };
             res.redirect('/');
         } else {
-            req.session.signupError = err;
+            req.session.error = err;
             res.redirect('/signup');
         }
     });
@@ -46,9 +48,9 @@ router.get('/signin', (req, res) => {
     res.render('login', {
         title: "Signin",
         action: "/signin",
-        error: req.session.signinError
+        error: req.session.error
     });
-    req.session.signinError = null;
+    req.session.error = null;
 });
 
 router.post('/signin', (req, res) => {
@@ -65,7 +67,7 @@ router.post('/signin', (req, res) => {
             };
             res.redirect('/');
         } else {
-            req.session.signinError = err;
+            req.session.error = err;
             res.redirect('/signin');
         }
     });
@@ -74,78 +76,6 @@ router.post('/signin', (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
-});
-
-router.get('/rooms/new', (req, res) => {
-    if (req.session.userData) {
-        res.render('new-room', {
-            userData: req.session.userData,
-            layout: 'logged-user',
-            roomOn: false
-        });
-    } else {
-        res.redirect('/');
-    }
-});
-
-router.post('/rooms/new', (req, res) => {
-    const roomData = new Room(req.body, req.session.userData.id);
-    chatdb.saveRoom(roomData, (err, newRoom) => {
-        if (!err) {
-            console.log(newRoom);
-            res.redirect(`/rooms/room/${newRoom._id}`);
-        } else {
-            console.log(err);
-            res.redirect('/rooms/new');
-        }
-    });
-});
-
-router.get('/rooms/room/:id', (req, res) => {
-    if (req.session.userData) {
-        const roomId = req.params.id;
-        console.log(req.params)
-        if(roomId){
-            chatdb.findRoomById(roomId, (err, room) => {
-                if(room){
-                    req.session.roomData = {
-                        id: room._id,
-                        name: room.name
-                    };
-                    res.render('room', {
-                        userData: req.session.userData,
-                        layout: 'logged-user',
-                        roomData: room,
-                        roomOn: true
-                    });
-                } else {
-                    console.log(err);
-                }
-            });
-        } else {
-            res.redirect('/');
-        }
-    } else {
-        res.redirect('/');
-    }
-});
-
-router.get('/rooms/find', (req, res) => {
-    if (req.session.userData) {
-        chatdb.findRooms(null, 10, (err, rooms) => {
-            if(rooms){
-                res.render('find-room', {
-                    userData: req.session.userData,
-                    rooms: rooms,
-                    layout: 'logged-user',
-                    roomOn: false
-                });
-            }
-        })
-        
-    } else {
-        res.redirect('/');
-    }
 });
 
 module.exports = router;

@@ -9,13 +9,24 @@
                     <form id='new-room-form' action="/rooms/new" method="POST" class="col s12">
                         <div class="row">
                             <div class="input-field col s12">
-                                <input placeholder="My room" id="new-room-name" name="name" type="text" class="validate">
+                                <input placeholder="My room" id="new-room-name" name="name" type="text"
+                                    class="validate">
                                 <label for="disabled">Room name</label>
+                            </div>
+                        </div>
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Photo</span>
+                                <input type="file">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input id="userFile" name="userFile" class="file-path validate" type="text">
                             </div>
                         </div>
                         <div class="row">
                             <div class="input-field col s12">
-                                <input placeholder="All right, this is my room." id="new-room-description" name="description" type="text" class="validate">
+                                <input placeholder="All right, this is my room." id="new-room-description"
+                                    name="description" type="text" class="validate">
                                 <label for="disabled">Description</label>
                             </div>
                         </div>
@@ -34,3 +45,11 @@
 
 <script type="application/javascript" src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>
+{{#if error}}
+<script>
+    window.addEventListener('load', () => {
+        let toastHTML = '<span>{{error}}</span><button class="btn-flat toast-action white-text">Ok</button>';
+        M.toast({ html: toastHTML, classes: 'red animated shake' });
+    });
+</script>
+{{/if}}

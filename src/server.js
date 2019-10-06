@@ -1,7 +1,6 @@
 const exphbrs = require('express-handlebars');
 const expSession = require('express-session');
 const bodyParser = require('body-parser');
-const socketIO = require('socket.io');
 const express = require('express');
 const path = require('path');
 const ip = require('ip');
@@ -15,7 +14,7 @@ const sessionConfig = {
 const sessionMiddleware = expSession(sessionConfig);
 
 const router = require('./routes/routes');
-const chatSocketIO = require('./sockets');
+const chatSocketIO = require('./libs/sockets');
 
 const app = express();
 
@@ -39,7 +38,5 @@ app.use(router);
 const server = app.listen(app.get('port'), () => {
     console.log(`Server running at http://${ip.address()}:${app.get('port')}`);
 });
-
-//require('./sockets')(socketIO(server));
 
 chatSocketIO(server, sessionMiddleware);

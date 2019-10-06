@@ -1,5 +1,5 @@
 const chatdb = require('./chatdb');
-const Message = require('./models/Message');
+const Message = require('../models/Message');
 
 const MAX_SEARCH_USERS = 10;
 const MAX_LOAD_MESSAGE = 20;
@@ -13,6 +13,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
     io.sockets.on('connection', socket => {
         if (socket.request.session.roomData) {
             const roomId = socket.request.session.roomData.id;
+            const userId = socket.request.session.userData.id;
 
             socket.join(roomId);
 
@@ -30,7 +31,6 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                     const message = new Message(msg, socket.request.session.userData);
                     chatdb.addMesaggeToRoom(message, roomId, (err, res) => {
                         if (res) {
-                            console.log(res);
                             io.sockets.to(roomId).emit('update room', res);
                         } else {
                             console.error(err);
@@ -38,9 +38,8 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                     })
                 }
             });
-            console.log(`User join to room; id: ${roomId}`);
+            console.log(`User: ${userId} join to room: ${roomId}`);
         }
-
 
         socket.on('search users', data => {
             chatdb.findUsersByNameRegex(data, MAX_SEARCH_USERS, (err, users) => {
