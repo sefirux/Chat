@@ -6,7 +6,7 @@
                     <h4>New room!</h4>
                 </div>
                 <div class="row">
-                    <form id='new-room-form' action="/rooms/new" method="POST" class="col s12">
+                    <form id='new-room-form' action="/rooms/new" method="POST" enctype="multipart/form-data" class="col s12">
                         <div class="row">
                             <div class="input-field col s12">
                                 <input placeholder="My room" id="new-room-name" name="name" type="text"
@@ -17,10 +17,10 @@
                         <div class="file-field input-field">
                             <div class="btn">
                                 <span>Photo</span>
-                                <input type="file">
+                                <input id="photo" name="photo" type="file">
                             </div>
                             <div class="file-path-wrapper">
-                                <input id="userFile" name="userFile" class="file-path validate" type="text">
+                                <input class="file-path validate" type="text">
                             </div>
                         </div>
                         <div class="row">

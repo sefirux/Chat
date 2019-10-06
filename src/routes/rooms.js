@@ -1,32 +1,34 @@
 const router = require('express').Router();
 const Room = require('../models/Room');
 const chatdb = require('../libs/chatdb');
-const savePhoto = require('../libs/uploads');
+const {uploadImg} = require('../libs/storage');
 
-router.route('/new')
-    .get((req, res) => {
-        if (!req.session.userData) return res.redirect('/');
-        res.render('new-room', {
-            userData: req.session.userData,
-            error: req.session.error,
-            layout: 'logged-user',
-            roomOn: false
-        });
-        req.session.error = null;
-    })
-    .post((req, res) => {
-        if (!req.session.userData) return res.redirect('/');
-        
-        const roomData = new Room(req.body, req.session.userData.id);
-        chatdb.saveRoom(roomData, (err, newRoom) => {
-            if (!err) {
-                res.redirect(`room/${newRoom._id}`);
-            } else {
-                req.session.error = err;
-                res.redirect(`new`);
-            }
-        });
+router.get('/new', (req, res) => {
+    if (!req.session.userData) return res.redirect('/');
+    res.render('new-room', {
+        userData: req.session.userData,
+        error: req.session.error,
+        layout: 'logged-user',
+        roomOn: false
     });
+    req.session.error = null;
+})
+
+router.post('/new', uploadImg.single('photo'), (req, res) => {
+    if (!req.session.userData) return res.redirect('/');
+
+    const room = new Room(req.body, req.session.userData.id);
+    room.imgUrl = `/public/${req.file.filename}`;
+
+    chatdb.saveRoom(room, (err, newRoom) => {
+        if (!err) {
+            res.redirect(`room/${newRoom._id}`);
+        } else {
+            req.session.error = err;
+            res.redirect(`new`);
+        }
+    });
+});
 
 router.get('/room/:id', (req, res) => {
     if (req.session.userData) {
@@ -36,7 +38,8 @@ router.get('/room/:id', (req, res) => {
                 if (room) {
                     req.session.roomData = {
                         id: room._id,
-                        name: room.name
+                        name: room.name,
+                        imgUrl: room.imgUrl
                     };
                     res.render('room', {
                         userData: req.session.userData,

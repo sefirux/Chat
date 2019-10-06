@@ -5,12 +5,21 @@
                 <div class="card-title center-align">
                     <h4>{{title}}</h4>
                 </div>
-                <form action={{action}} method="POST">
-                    {{#if name}}
+                <form action={{action}} method="POST" enctype="multipart/form-data">
+                    {{#if signup}}
                     <div class="row">
                         <div class="input-field col s12 m12">
                             <input type="text" name="name" id="name">
                             <label for="name">Name</label>
+                        </div>
+                    </div>
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Avatar</span>
+                            <input id="avatar" name="avatar" type="file">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
                         </div>
                     </div>
                     {{/if}}
