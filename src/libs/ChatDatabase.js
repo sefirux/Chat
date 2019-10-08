@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const MessagSchema = require('../models/MessagSchema');
+const MessagSchema = require('../models/MessageSchema');
 const RoomSchema = require('../models/RoomSchema');
 const UserSchema = require('../models/UserSchema');
 
