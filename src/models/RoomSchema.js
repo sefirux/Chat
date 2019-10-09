@@ -1,10 +1,16 @@
 const { Schema } = require('mongoose');
 const { ObjectId } = require('mongoose').mongo;
 
+const ERR_ROOM_ALREADY_EXIST = 'Room already exists';
+
 const RoomSchema = new Schema({
     _id: {
         type: Schema.Types.ObjectId,
         default: ObjectId
+    },
+    name: {
+        type: String,
+        default: `Room-${Date.now}`
     },
     admin: {
         type: {
@@ -22,21 +28,25 @@ const RoomSchema = new Schema({
         default: []
     },
     description: String,
-    imgUrl: String,
-    messages: {
-        type: [Schema.Types.ObjectId],
-        default: []
-    }
+    imgUrl: String
 });
 
 // STATIC
 
-RoomSchema.statics.findRoomById = async function(id){
-    return await this.findOne({_id: new ObjectId(id)});
+RoomSchema.statics.findRoomByName = function(name, cb){
+    this.findOne({name: name}, cb);
 }
 
-RoomSchema.statics.findRoomByName = async function(name){
-    return await this.find({name: name});
+RoomSchema.statics.saveRoom = function(room, cb){
+    this.findRoomByName(room.name, (err, oldRoom) => {
+        if(oldRoom){
+            cb(ERR_ROOM_ALREADY_EXIST, null);
+        } else if(err){
+            cb(err, null);
+        } else {
+            room.save(cb);
+        }
+    });
 }
 
 // METHODS

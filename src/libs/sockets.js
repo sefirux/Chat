@@ -1,5 +1,6 @@
-const chatdb = require('./chatdb');
-const Message = require('../models/Message');
+const {
+    Message
+} = require('../libs/ChatDatabase');
 
 const MAX_SEARCH_USERS = 10;
 const MAX_LOAD_MESSAGE = 20;
@@ -13,73 +14,63 @@ const ChatSocketIO = (server, sessionMiddleware) => {
     io.sockets.on('connection', socket => {
         if (socket.request.session.roomData) {
             const roomId = socket.request.session.roomData.id;
-            const userId = socket.request.session.userData.id;
+            const userData = socket.request.session.userData;
 
             socket.join(roomId);
 
-            chatdb.findRoomById(roomId, (err, room) => {
-                if (room) {
-                    room.messages.forEach(message => {
-                        //message.addressee
-                        io.sockets.to(roomId).emit('update room', message);
+            loadMessages(roomId, (err, messages) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    let oldMessages = [];
+
+                    messages.forEach(message => {
+                        oldMessages.push({
+                            sender: message.sender.name,
+                            date: message.date,
+                            msg: message.msg
+                        });
                     });
+                    
+                    io.sockets.to(roomId).emit('load old messages', oldMessages);
                 }
             });
 
             socket.to(roomId).on('send message', msg => {
-                if (msg.length > 0) {
-                    const message = new Message(msg, socket.request.session.userData);
-                    chatdb.addMesaggeToRoom(message, roomId, (err, res) => {
-                        if (res) {
-                            io.sockets.to(roomId).emit('update room', res);
-                        } else {
-                            console.error(err);
-                        }
-                    })
-                }
+                const message = new Message({
+                    _roomId: roomId,
+                    sender: {
+                        _id: userData.id,
+                        name: userData.name
+                    },
+                    msg: msg
+                });
+                message.save((err, msg) => {
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        io.sockets.to(roomId).emit('load new message', {
+                            sender: msg.sender.name,
+                            date: msg.date,
+                            msg: msg.msg
+                        });
+                    }
+                });
             });
-            console.log(`User: ${userId} join to room: ${roomId}`);
+            console.log(`User: ${userData.id} join to room: ${roomId}`);
         }
-
-        socket.on('search users', data => {
-            chatdb.findUsersByNameRegex(data, MAX_SEARCH_USERS, (err, users) => {
-                users.forEach(user => {
-                    socket.emit('user search completed', {
-                        _id: user._id,
-                        name: user.name,
-                        email: user.email
-                    });
-                })
-            })
-        });
-
-        socket.on('add user to room', data => {
-            chatdb.findUserById(data.userId, (err, user) => {
-                if (user) {
-                    chatdb.findRoom(data.roomId, (err, room) => {
-                        if (room) {
-                            if (!room.membersId.include(user._id)) {
-                                room.membersId.push(user._id);
-                                chatdb.updateRoom({
-                                    _id: room._id
-                                }, room, (err, res) => {
-                                    if (res) {
-                                        chatdb.updateUser({
-                                            _id: user._id
-                                        }, user, (err, res) => {
-                                            if (res) {
-                                                console.log(`User ${user.name} added to ${room.name} room.`);
-                                            }
-                                        })
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            });
-        });
     });
 };
+
+const loadMessages = (roomId, cb) => {
+    Message.find({
+            _roomId: roomId
+        })
+        .limit(MAX_LOAD_MESSAGE)
+        .sort({
+            date: -1
+        })
+        .exec(cb);
+}
 
 module.exports = ChatSocketIO;

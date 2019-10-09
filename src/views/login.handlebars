@@ -5,7 +5,7 @@
                 <div class="card-title center-align">
                     <h4>{{title}}</h4>
                 </div>
-                <form action={{action}} method="POST" enctype="multipart/form-data">
+                <form action={{action}} method="POST" {{#if signup}}enctype="multipart/form-data"{{else}}enctype="application/x-www-form-urlencoded"{{/if}}>
                     {{#if signup}}
                     <div class="row">
                         <div class="input-field col s12 m12">

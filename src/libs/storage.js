@@ -4,6 +4,8 @@ const path = require('path');
 const IMG_DESTINATION_FOLDER = path.join(__dirname, '../uploads/images');
 const FILE_DESTINATION_FOLDER = path.join(__dirname, '../uploads');
 const ERR_FORMAT = 'Only images are allowed';
+const IMG_UPLOADS_ROUTE = '/public';
+const IMG_DEFAULT_ROUTE = `${IMG_UPLOADS_ROUTE}/img-default.jpg`;
 
 const filesStorage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -57,4 +59,12 @@ const uploadImg = multer({
     }
 });
 
-module.exports = {upload, uploadImg};
+const getImgUrl = file => {
+    if (file) {
+        return `${IMG_UPLOADS_ROUTE}/${file.filename}`;
+    } else {
+        return IMG_DEFAULT_ROUTE;
+    }
+};
+
+module.exports = {upload, uploadImg, getImgUrl};

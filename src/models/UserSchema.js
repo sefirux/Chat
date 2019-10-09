@@ -4,6 +4,9 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+const ERR_USER_DOESNT_EXIST = 'This user does not exist or incorrect password';
+const ERR_USER_ALREADY_EXIST = 'User already exists';
+
 const UserSchema = new Schema({
     _id: {
         type: Schema.Types.ObjectId,
@@ -30,17 +33,49 @@ const UserSchema = new Schema({
 
 // STATIC
 
-UserSchema.statics.findUserById = async function(id){
-    return await this.findOne({_id: new ObjectId(id)});
+UserSchema.statics.findUser = function(email, password, cb) {
+    this.findUserByEmail(email, (err, user) => {
+        if(user && user.compPass(password)){
+            cb(null, user);
+        } else {
+            cb(ERR_USER_DOESNT_EXIST, null);
+        }
+    });
 }
 
-UserSchema.statics.findUserByEmail = async function(email){
-    return await this.findOne({email: email});
+UserSchema.statics.findUserByEmail = function(email, cb){
+    this.findOne({email: email}, (err, user) => {
+        if(user){
+            cb(null, user);
+        } else if(err){
+            cb(err, null);
+        } else {
+            cb(ERR_USER_DOESNT_EXIST, null);
+        }
+    });
 }
 
-UserSchema.statics.findUsersByName = async function(name){
-    return await this.find({name: name});
+UserSchema.statics.findUsersByName = function(name, cb){
+    this.find({name: name}, (err, user) => {
+        if(!user.length){
+            cb(null, user);
+        } else if(err){
+            cb(err, null);
+        } else {
+            cb(ERR_USER_DOESNT_EXIST, null);
+        }
+    });
 }
+
+UserSchema.statics.saveUser = function(user, cb){
+    this.findUserByEmail(user.email, (err, oldUser) => {
+        if(oldUser){
+            cb(ERR_USER_ALREADY_EXIST, null);
+        } else {
+            user.save(cb);
+        }
+    });
+};
 
 // METHODS
 
