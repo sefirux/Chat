@@ -76,17 +76,6 @@ RoomSchema.methods.removeUser = function(user) {
     return this.save();
 };
 
-RoomSchema.methods.addMessage = function(message) {
-    this.messages.push(message._id);
-    return this.save();
-};
-
-RoomSchema.methods.removeMessage = function(message) {
-    const messages = this.messages.filter(message => message._id != message._id);
-    this.messages = messages;
-    return this.save();
-};
-
 RoomSchema.methods.setImgUrl = function(imgUrl){
     this.imgUrl = imgUrl;
     return this.save();
