@@ -35,7 +35,7 @@ const UserSchema = new Schema({
 
 UserSchema.statics.findUser = function(email, password, cb) {
     this.findUserByEmail(email, (err, user) => {
-        if(user && user.compPass(password)){
+        if(user && user.passwordCompare(password)){
             cb(null, user);
         } else {
             cb(ERR_USER_DOESNT_EXIST, null);
@@ -94,7 +94,7 @@ UserSchema.methods.setPassword = function (password) {
     return this.save();
 };
 
-UserSchema.methods.compPass = function (password) {
+UserSchema.methods.passwordCompare = function (password) {
     return bcrypt.compareSync(password, this.password);
 }
 
