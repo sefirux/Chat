@@ -1,6 +1,4 @@
-const {
-    Message
-} = require('../libs/ChatDatabase');
+const { Message } = require('../libs/ChatDatabase');
 
 const MAX_SEARCH_USERS = 10;
 const MAX_LOAD_MESSAGE = 20;
@@ -31,7 +29,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                             msg: message.msg
                         });
                     });
-                    
+
                     io.sockets.to(roomId).emit('load old messages', oldMessages);
                 }
             });
@@ -64,8 +62,8 @@ const ChatSocketIO = (server, sessionMiddleware) => {
 
 const loadMessages = (roomId, cb) => {
     Message.find({
-            _roomId: roomId
-        })
+        _roomId: roomId
+    })
         .limit(MAX_LOAD_MESSAGE)
         .sort({
             date: -1

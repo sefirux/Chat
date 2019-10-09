@@ -5,7 +5,7 @@ const socket = io();
 let lastMessage;
 
 const bottom = () => {
-    window.scrollTo(0,document.body.scrollHeight);
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 const botonesVolver = document.querySelectorAll('.volver-btn');

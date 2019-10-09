@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let elems = document.querySelectorAll('.autocomplete');
     let sidenavs = document.querySelectorAll('.sidenav');
     let sliders = document.querySelectorAll('.slider');
-    
+
     M.Autocomplete.init(elems);
     M.Materialbox.init(materialBoxes);
     M.Sidenav.init(sidenavs);

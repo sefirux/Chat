@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const {Room} = require('../libs/ChatDatabase');
-const {uploadImg, getImgUrl} = require('../libs/storage');
+const { Room } = require('../libs/ChatDatabase');
+const { uploadImg, getImgUrl } = require('../libs/storage');
 
 router.get('/new', (req, res) => {
     const userData = req.session.userData;
@@ -69,7 +69,7 @@ router.get('/room/:id', (req, res) => {
 router.get('/find', (req, res) => {
     const userData = req.session.userData;
     if (!userData) return res.redirect('/');
-    
+
     Room.find((err, rooms) => {
         if (rooms) {
             res.render('find-room', {

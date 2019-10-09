@@ -33,9 +33,9 @@ const UserSchema = new Schema({
 
 // STATIC
 
-UserSchema.statics.findUser = function(email, password, cb) {
+UserSchema.statics.findUser = function (email, password, cb) {
     this.findUserByEmail(email, (err, user) => {
-        if(user && user.passwordCompare(password)){
+        if (user && user.passwordCompare(password)) {
             cb(null, user);
         } else {
             cb(ERR_USER_DOESNT_EXIST, null);
@@ -43,11 +43,11 @@ UserSchema.statics.findUser = function(email, password, cb) {
     });
 }
 
-UserSchema.statics.findUserByEmail = function(email, cb){
-    this.findOne({email: email}, (err, user) => {
-        if(user){
+UserSchema.statics.findUserByEmail = function (email, cb) {
+    this.findOne({ email: email }, (err, user) => {
+        if (user) {
             cb(null, user);
-        } else if(err){
+        } else if (err) {
             cb(err, null);
         } else {
             cb(ERR_USER_DOESNT_EXIST, null);
@@ -55,11 +55,11 @@ UserSchema.statics.findUserByEmail = function(email, cb){
     });
 }
 
-UserSchema.statics.findUsersByName = function(name, cb){
-    this.find({name: name}, (err, user) => {
-        if(!user.length){
+UserSchema.statics.findUsersByName = function (name, cb) {
+    this.find({ name: name }, (err, user) => {
+        if (!user.length) {
             cb(null, user);
-        } else if(err){
+        } else if (err) {
             cb(err, null);
         } else {
             cb(ERR_USER_DOESNT_EXIST, null);
@@ -67,9 +67,9 @@ UserSchema.statics.findUsersByName = function(name, cb){
     });
 }
 
-UserSchema.statics.saveUser = function(user, cb){
+UserSchema.statics.saveUser = function (user, cb) {
     this.findUserByEmail(user.email, (err, oldUser) => {
-        if(oldUser){
+        if (oldUser) {
             cb(ERR_USER_ALREADY_EXIST, null);
         } else {
             user.save(cb);

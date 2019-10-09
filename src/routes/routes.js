@@ -1,5 +1,5 @@
-const {User} = require('../libs/ChatDatabase');
-const {uploadImg, getImgUrl} = require('../libs/storage');
+const { User } = require('../libs/ChatDatabase');
+const { uploadImg, getImgUrl } = require('../libs/storage');
 const router = require('express').Router();
 const roomsRouter = require('./rooms');
 const express = require('express');
@@ -39,7 +39,7 @@ router.post('/signup', uploadImg.single('avatar'), (req, res) => {
     });
 
     User.saveUser(newUser, (err, user) => {
-        if(user){
+        if (user) {
             req.session.userData = {
                 id: user._id,
                 name: user.name,
@@ -65,7 +65,7 @@ router.get('/signin', (req, res) => {
 
 router.post('/signin', (req, res) => {
     User.findUser(req.body.email, req.body.password, (err, user) => {
-        if(user){
+        if (user) {
             req.session.userData = {
                 id: user._id,
                 name: user.name,

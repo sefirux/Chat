@@ -67,4 +67,4 @@ const getImgUrl = file => {
     }
 };
 
-module.exports = {upload, uploadImg, getImgUrl};
+module.exports = { upload, uploadImg, getImgUrl };

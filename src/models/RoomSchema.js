@@ -33,15 +33,15 @@ const RoomSchema = new Schema({
 
 // STATIC
 
-RoomSchema.statics.findRoomByName = function(name, cb){
-    this.findOne({name: name}, cb);
+RoomSchema.statics.findRoomByName = function (name, cb) {
+    this.findOne({ name: name }, cb);
 }
 
-RoomSchema.statics.saveRoom = function(room, cb){
+RoomSchema.statics.saveRoom = function (room, cb) {
     this.findRoomByName(room.name, (err, oldRoom) => {
-        if(oldRoom){
+        if (oldRoom) {
             cb(ERR_ROOM_ALREADY_EXIST, null);
-        } else if(err){
+        } else if (err) {
             cb(err, null);
         } else {
             room.save(cb);
@@ -51,13 +51,13 @@ RoomSchema.statics.saveRoom = function(room, cb){
 
 // METHODS
 
-RoomSchema.methods.addUser = function(user) {
+RoomSchema.methods.addUser = function (user) {
     const userData = {
         _id: user._id,
         name: user.name,
         avatarUrl: user.avatarUrl
     };
-    if(!this.members.includes(userData)){
+    if (!this.members.includes(userData)) {
         this.members.push(userData);
         return this.save();
     } else {
@@ -65,7 +65,7 @@ RoomSchema.methods.addUser = function(user) {
     }
 };
 
-RoomSchema.methods.removeUser = function(user) {
+RoomSchema.methods.removeUser = function (user) {
     const userData = {
         _id: user._id,
         name: user.name,
@@ -76,12 +76,12 @@ RoomSchema.methods.removeUser = function(user) {
     return this.save();
 };
 
-RoomSchema.methods.setImgUrl = function(imgUrl){
+RoomSchema.methods.setImgUrl = function (imgUrl) {
     this.imgUrl = imgUrl;
     return this.save();
 };
 
-RoomSchema.methods.setAdmin = function(user) {
+RoomSchema.methods.setAdmin = function (user) {
     const userData = {
         _id: user._id,
         name: user.name,
@@ -91,7 +91,7 @@ RoomSchema.methods.setAdmin = function(user) {
     return this.save();
 };
 
-RoomSchema.methods.setDescription = function(description){
+RoomSchema.methods.setDescription = function (description) {
     this.description = description;
     return this.save();
 };

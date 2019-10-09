@@ -17,8 +17,8 @@ const dbConfig = {
     family: 4
 };
 
-mongoose.connect(dbURI,dbConfig)
+mongoose.connect(dbURI, dbConfig)
     .then(res => console.log(`Successfuly connected: ${dbURI}`))
     .catch(err => console.error(err));
 
-module.exports = {Message, Room, User};
+module.exports = { Message, Room, User };
