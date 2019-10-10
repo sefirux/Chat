@@ -34,4 +34,14 @@ const MessageShema = new Schema({
     }
 });
 
+// STATICS
+
+MessageShema.statics.loadMessages = function (roomId, min, max, cb) {
+    this.find({ _roomId: roomId })
+        .skip(min)
+        .limit(max)
+        .sort({ date: -1 })
+        .exec(cb);
+}
+
 module.exports = MessageShema;

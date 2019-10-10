@@ -13,25 +13,29 @@ const ChatSocketIO = (server, sessionMiddleware) => {
         if (socket.request.session.roomData) {
             const roomId = socket.request.session.roomData.id;
             const userData = socket.request.session.userData;
+            let countMSG = 0;
 
             socket.join(roomId);
 
-            loadMessages(roomId, (err, messages) => {
-                if (err) {
-                    console.log(err)
-                } else {
-                    let oldMessages = [];
+            socket.to(roomId).on('old messages', () => {
+                Message.loadMessages(roomId, countMSG, MAX_LOAD_MESSAGE, (err, messages) => {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        let oldMessages = [];
+                        countMSG += MAX_LOAD_MESSAGE;
 
-                    messages.forEach(message => {
-                        oldMessages.push({
-                            sender: message.sender.name,
-                            date: message.date,
-                            msg: message.msg
+                        messages.forEach(message => {
+                            oldMessages.push({
+                                sender: message.sender.name,
+                                date: message.date,
+                                msg: message.msg
+                            });
                         });
-                    });
 
-                    io.sockets.to(roomId).emit('load old messages', oldMessages);
-                }
+                        io.sockets.to(roomId).emit('load old messages', oldMessages);
+                    }
+                });
             });
 
             socket.to(roomId).on('send message', msg => {
@@ -59,16 +63,5 @@ const ChatSocketIO = (server, sessionMiddleware) => {
         }
     });
 };
-
-const loadMessages = (roomId, cb) => {
-    Message.find({
-        _roomId: roomId
-    })
-        .limit(MAX_LOAD_MESSAGE)
-        .sort({
-            date: -1
-        })
-        .exec(cb);
-}
 
 module.exports = ChatSocketIO;
