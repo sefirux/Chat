@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
 const { ObjectId } = require('mongoose').mongo;
 
@@ -108,4 +109,6 @@ RoomSchema.methods.setDescription = function (description) {
     return this.save();
 };
 
-module.exports = RoomSchema;
+const Room = mongoose.model('Room', RoomSchema);
+
+module.exports = Room;

@@ -1,8 +1,9 @@
+const saltRounds = 10;
+const bcrypt = require('bcrypt');
+const validator = require('validator');
+const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
 const { ObjectId } = require('mongoose').mongo;
-const validator = require('validator');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 const ERR_USER_DOESNT_EXIST = 'This user does not exist or incorrect password';
 const ERR_USER_ALREADY_EXIST = 'User already exists';
@@ -107,4 +108,6 @@ function encrypt(string) {
     return bcrypt.hashSync(string, saltRounds);
 }
 
-module.exports = UserSchema;
+const User = mongoose.model('User', UserSchema);
+
+module.exports = User;

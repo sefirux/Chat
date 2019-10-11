@@ -28,22 +28,21 @@ socket.on('load new message', message => {
     bottom();
 });
 
-socket.on('load old messages', messages => {
-    if(!messages.length){
+socket.on('load old messages', data => {
+    if (!data.messagesToLoad) {
         chatMessages.removeChild(messageLoader.parentNode);
-    } else {
-        messages.forEach(message => {
-            const msg = document.createElement('div');
-            msg.classList.add('card');
-            msg.innerHTML = `<div class="card-content">
+    }
+    data.messages.forEach(message => {
+        const msg = document.createElement('div');
+        msg.classList.add('card');
+        msg.innerHTML = `<div class="card-content">
                                 <p><strong>${message.sender}</strong></p>
                                 <p>${message.msg}</p>
                                 <p class="right"><small>${new Date(message.date).toLocaleString()}</small></p>
                             </div>`;
-            chatMessages.insertBefore(msg, lastMessage);
-            lastMessage = msg;
-        });
-    }
+        chatMessages.insertBefore(msg, lastMessage);
+        lastMessage = msg;
+    });
 });
 
 formMsj.addEventListener('submit', event => {

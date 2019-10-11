@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Schema } = require('mongoose');
 const { ObjectId } = require('mongoose').mongo;
 
@@ -44,4 +45,6 @@ MessageShema.statics.loadMessages = function (roomId, min, max, cb) {
         .exec(cb);
 }
 
-module.exports = MessageShema;
+const Message = mongoose.model('Message', MessageShema);
+
+module.exports = Message;

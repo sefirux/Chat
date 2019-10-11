@@ -1,12 +1,8 @@
 const mongoose = require('mongoose');
 
-const MessagSchema = require('../models/MessageSchema');
-const RoomSchema = require('../models/RoomSchema');
-const UserSchema = require('../models/UserSchema');
-
-const Message = mongoose.model('Message', MessagSchema);
-const Room = mongoose.model('Room', RoomSchema);
-const User = mongoose.model('User', UserSchema);
+const Message = require('../models/Message');
+const Room = require('../models/Room');
+const User = require('../models/User');
 
 const dbPort = 27017;
 const dbName = 'roomdb';
