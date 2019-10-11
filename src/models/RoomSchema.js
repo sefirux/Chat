@@ -28,13 +28,25 @@ const RoomSchema = new Schema({
         default: []
     },
     description: String,
-    imgUrl: String
+    imgUrl: String,
+    date: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 // STATIC
 
 RoomSchema.statics.findRoomByName = function (name, cb) {
     this.findOne({ name: name }, cb);
+}
+
+RoomSchema.statics.loadRooms = function (sortOpc, min, max, cb) {
+    this.find()
+        .skip(min)
+        .limit(max)
+        .sort(sortOpc)
+        .exec(cb);
 }
 
 RoomSchema.statics.saveRoom = function (room, cb) {

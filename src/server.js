@@ -1,4 +1,5 @@
-const exphbrs = require('express-handlebars');
+const hdbsHelpers = require('handlebars-helpers');
+const expHbrs = require('express-handlebars');
 const expSession = require('express-session');
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -29,7 +30,8 @@ app.use(sessionMiddleware);
 app.set('port', process.env.PORT || 4040);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
-app.engine('handlebars', exphbrs({
+app.engine('handlebars', expHbrs({
+    helpers: hdbsHelpers(),
     defaultLayout: 'main'
 }));
 

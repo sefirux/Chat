@@ -23,13 +23,25 @@
         <div class="row">
             <div class="col s12">
                 <ul class="pagination">
+                    {{#if rooms}}
+
+                    {{#compare page '==' 0}}
                     <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-                    <li class="active waves-effect blue"><a href="#!">1</a></li>
-                    <li class="waves-effect blue"><a href="#!">2</a></li>
-                    <li class="waves-effect blue"><a href="#!">3</a></li>
-                    <li class="waves-effect blue"><a href="#!">4</a></li>
-                    <li class="waves-effect blue"><a href="#!">5</a></li>
-                    <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                    {{else}}
+                    <li class="waves-effect"><a href="{{subtract page 1}}"><i class="material-icons">chevron_left</i></a></li>
+                    {{/compare}}
+
+                    {{#each pagesData}}
+                    <li class="{{#is @index ../page}} active {{/is}}waves-effect blue"><a href="{{url}}">{{@index}}</a></li>
+                    {{/each}}
+
+                    {{#compare page '==' (subtract (length pagesData) 1)}}
+                    <li class="disabled"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                    {{else}}
+                    <li class="waves-effect"><a href="{{sum page 1}}"><i class="material-icons">chevron_right</i></a></li>
+                    {{/compare}}
+
+                    {{/if}}
                 </ul>
             </div>
         </div>

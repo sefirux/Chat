@@ -2,6 +2,8 @@ const router = require('express').Router();
 const { Room } = require('../libs/ChatDatabase');
 const { uploadImg, getImgUrl } = require('../libs/storage');
 
+const MAX_ROOM_LOAD = 2;
+
 router.get('/new', (req, res) => {
     const userData = req.session.userData;
     if (!userData) return res.redirect('/');
@@ -69,7 +71,39 @@ router.get('/room/:id', (req, res) => {
 router.get('/find', (req, res) => {
     const userData = req.session.userData;
     if (!userData) return res.redirect('/');
+    res.redirect('find/0');
+});
 
+router.get('/find/:page' , (req, res) => {
+    const userData = req.session.userData;
+    if (!userData) return res.redirect('/');
+
+    const page = req.params.page? parseInt(req.params.page) : 0;
+
+    Room.countDocuments((err, count) => {
+        Room.loadRooms({date: 1}, page * MAX_ROOM_LOAD, MAX_ROOM_LOAD, (err, rooms) => {
+            if (rooms) {
+                let pagesData = []; //ROOMS PAGES
+                for(i = 0; i < count / MAX_ROOM_LOAD; i++){
+                    pagesData.push ({ url: `${i}` });
+                }
+                const data = {
+                    layout: 'logged-user',
+                    pagesData: pagesData,
+                    userData: userData,
+                    page: page,
+                    rooms: rooms,
+                    roomOn: false
+                };
+                res.render('find-room', data);
+            } else {
+                console.error(err);
+                res.redirect('/');
+            }
+        });
+    });
+    
+    /*
     Room.find((err, rooms) => {
         if (rooms) {
             res.render('find-room', {
@@ -83,6 +117,8 @@ router.get('/find', (req, res) => {
             res.redirect('/');
         }
     });
+    */
 });
+
 
 module.exports = router;
