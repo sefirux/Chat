@@ -35,8 +35,8 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                             msg: message.msg
                         });
                     });
-
-                    io.sockets.to(roomId).emit('load old messages', {
+                    
+                    io.to(socket.id).emit('load old messages', {
                         messages: oldMessages,
                         messagesToLoad: countMSG < count
                     });
@@ -57,7 +57,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                 if (err) {
                     console.error(err);
                 } else {
-                    io.sockets.to(roomId).emit('load new message', {
+                    io.to(roomId).emit('load new message', {
                         sender: msg.sender.name,
                         date: msg.date,
                         msg: msg.msg
