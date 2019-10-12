@@ -9,12 +9,16 @@
         <div class="col s12 m4 xl3">
             <div class="card">
                 <div class="card-image">
-                    <img src="{{imgUrl}}">
-                    <span class="card-title black-text"><strong>{{name}}</strong></span>
+                    {{#if coverUrl}}
+                    <img src="{{coverUrl}}">
+                    {{else}}
+                    <img src="/default/front-default.png">
+                    {{/if}}
                     <a href="/rooms/room/{{_id}}" class="btn-floating halfway-fab waves-effect waves-light green"><i
                             class="material-icons">subdirectory_arrow_right</i></a>
                 </div>
                 <div class="card-content">
+                    <span class="card-title"><strong>{{name}}</strong></span>
                     <p>{{description}}</p>
                 </div>
             </div>
@@ -55,3 +59,12 @@
         </div>
     </div>
 </footer>
+
+{{#if findError}}
+<script>
+    window.addEventListener('load', () => {
+        let toastHTML = '<span>{{findError}}</span><button class="btn-flat toast-action white-text">Ok</button>';
+        M.toast({ html: toastHTML, classes: 'red animated shake' });
+    });
+</script>
+{{/if}}

@@ -59,3 +59,12 @@
     </div>
 </div>
 </div>
+
+{{#if pageError}}
+<script>
+    window.addEventListener('load', () => {
+        let toastHTML = '<span>{{pageError}}</span><button class="btn-flat toast-action white-text">Ok</button>';
+        M.toast({ html: toastHTML, classes: 'red animated shake' });
+    });
+</script>
+{{/if}}

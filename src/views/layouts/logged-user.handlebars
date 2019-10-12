@@ -46,8 +46,13 @@
                     <img
                         src="https://images.pexels.com/photos/1159343/pexels-photo-1159343.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
                 </div>
-                <a href="#user"><img class="circle"
-                        src="{{userData.avatarUrl}}"></a>
+                <a href="#user">
+                    {{#if userData.avatarUrl}}
+                    <img class="circle" src="{{userData.avatarUrl}}">
+                    {{else}}
+                    <img class="circle" src="/default/avatar-default.png">
+                    {{/if}}
+                </a>
                 <a href="#name"><span class="white-text name">{{userData.name}}</span></a>
                 <a href="#email"><span class="white-text email">{{userData.email}}</span></a>
             </div>

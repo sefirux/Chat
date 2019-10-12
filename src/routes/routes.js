@@ -1,5 +1,5 @@
 const imageUpload = require('../libs/imageStorage');
-const resize = require('../libs/imageResize');
+const { resizeAvatar } = require('../libs/imageResize');
 const { User } = require('../libs/ChatDatabase');
 const router = require('express').Router();
 const roomsRouter = require('./rooms');
@@ -9,20 +9,26 @@ const path = require('path');
 
 router.use('/rooms', roomsRouter);
 router.use('/public', express.static(path.join(__dirname, '../uploads/images')));
+router.use('/default', express.static(path.join(__dirname, '../uploads/default')));
 
 router.get('/', (req, res) => {
-    const userData = req.session.userData;
-    if (userData) {
-        res.render('home', {
-            userData: userData,
-            layout: 'logged-user'
-        });
-    } else {
+    if (!req.session.userData) {
         res.render('home');
+        return;
     }
+    res.render('home', {
+        userData: req.session.userData,
+        pageError: req.session.error,
+        layout: 'logged-user'
+    });
+    req.session.error = null;
 });
 
 router.get('/signup', (req, res) => {
+    if (req.session.userData) {
+        res.redirect('/');
+        return;
+    }
     res.render('login', {
         title: "Signup",
         action: "/signup",
@@ -32,12 +38,15 @@ router.get('/signup', (req, res) => {
     req.session.error = null;
 });
 
-router.post('/signup', imageUpload.single('avatar'), (req, res) => {
-    resize(req.file, req.file.fieldname, (err, imgUrl) => {
-        if(err){
-            req.session.error = err;
+router.post('/signup', (req, res) => {
+    imageUpload.single('avatar')(req, res, err => {
+        if (err) {
+            req.session.error = err.message;
             res.redirect('/signup');
-        } else {
+            return;
+        }
+
+        resizeAvatar(req.file, (err, imgUrl) => {
             const newUser = new User({
                 name: req.body.name,
                 email: req.body.email,
@@ -46,24 +55,28 @@ router.post('/signup', imageUpload.single('avatar'), (req, res) => {
             });
 
             User.saveUser(newUser, (err, user) => {
-                if (user) {
-                    req.session.userData = {
-                        id: user._id,
-                        name: user.name,
-                        email: user.email,
-                        avatarUrl: user.avatarUrl
-                    };
-                    res.redirect('/');
-                } else {
+                if (err) {
                     req.session.error = err;
                     res.redirect('/signup');
+                    return;
                 }
+                req.session.userData = {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    avatarUrl: user.avatarUrl
+                };
+                res.redirect('/');
             });
-        }
+        });
     });
 });
 
 router.get('/signin', (req, res) => {
+    if (req.session.userData) {
+        res.redirect('/');
+        return;
+    }
     res.render('login', {
         title: "Signin",
         action: "/signin",
@@ -74,18 +87,19 @@ router.get('/signin', (req, res) => {
 
 router.post('/signin', (req, res) => {
     User.findUser(req.body.email, req.body.password, (err, user) => {
-        if (user) {
-            req.session.userData = {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                avatarUrl: user.avatarUrl
-            };
-            res.redirect('/');
-        } else {
+        if (err) {
             req.session.error = err;
             res.redirect('/signin');
+            return;
         }
+
+        req.session.userData = {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            avatarUrl: user.avatarUrl
+        };
+        res.redirect('/');
     });
 });
 

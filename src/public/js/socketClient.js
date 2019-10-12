@@ -17,7 +17,7 @@ botonesVolver.forEach(b => {
 
 socket.on('load new message', message => {
     const msg = document.createElement('div');
-    msg.classList.add('card', 'animated', 'tada');
+    msg.classList.add('card', 'animated', 'bounce');
     msg.innerHTML = `<div class="card-content">
                         <p><strong>${message.sender}</strong></p>
                         <p>${message.msg}</p>

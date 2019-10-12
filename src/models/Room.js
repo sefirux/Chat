@@ -29,7 +29,7 @@ const RoomSchema = new Schema({
         default: []
     },
     description: String,
-    imgUrl: String,
+    coverUrl: String,
     date: {
         type: Date,
         default: Date.now
