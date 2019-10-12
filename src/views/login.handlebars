@@ -14,7 +14,7 @@
                         </div>
                     </div>
                     <div class="file-field input-field">
-                        <div class="btn">
+                        <div class="btn indigo accent-3">
                             <span>Avatar</span>
                             <input id="avatar" name="avatar" type="file">
                         </div>
@@ -47,10 +47,10 @@
     </div>
 </div>
 
-{{#if error}}
+{{#if loginError}}
 <script>
     window.addEventListener('load', () => {
-        let toastHTML = '<span>{{error}}</span><button class="btn-flat toast-action white-text">Ok</button>';
+        let toastHTML = '<span>{{loginError}}</span><button class="btn-flat toast-action white-text">Ok</button>';
         M.toast({ html: toastHTML, classes: 'red animated shake' });
     });
 </script>

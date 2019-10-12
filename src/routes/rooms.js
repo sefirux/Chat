@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Room } = require('../libs/ChatDatabase');
-const { uploadImg, getImgUrl } = require('../libs/storage');
+const imageUpload = require('../libs/imageStorage');
 
 const MAX_ROOM_LOAD = 2;
 
@@ -10,15 +10,14 @@ router.get('/new', (req, res) => {
 
     res.render('new-room', {
         userData: userData,
-        error: req.session.error,
+        roomError: req.session.error,
         layout: 'logged-user',
         roomOn: false
     });
-
     req.session.error = null;
 });
 
-router.post('/new', uploadImg.single('photo'), async (req, res) => {
+router.post('/new', imageUpload.single('photo'), async (req, res) => {
     const userData = req.session.userData;
     if (!userData) return res.redirect('/');
 
@@ -28,8 +27,7 @@ router.post('/new', uploadImg.single('photo'), async (req, res) => {
             _id: userData._id,
             name: userData.name
         },
-        description: req.body.description,
-        imgUrl: getImgUrl(req.file)
+        description: req.body.description
     });
 
     Room.saveRoom(room, (err, room) => {
@@ -97,27 +95,11 @@ router.get('/find/:page' , (req, res) => {
                 };
                 res.render('find-room', data);
             } else {
-                console.error(err);
+                console.log(err);
                 res.redirect('/');
             }
         });
     });
-    
-    /*
-    Room.find((err, rooms) => {
-        if (rooms) {
-            res.render('find-room', {
-                userData: userData,
-                rooms: rooms,
-                layout: 'logged-user',
-                roomOn: false
-            });
-        } else {
-            console.error(err);
-            res.redirect('/');
-        }
-    });
-    */
 });
 
 

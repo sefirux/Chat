@@ -15,6 +15,6 @@ const dbConfig = {
 
 mongoose.connect(dbURI, dbConfig)
     .then(res => console.log(`Successfuly connected: ${dbURI}`))
-    .catch(err => console.error(err));
+    .catch(err => console.log(err));
 
 module.exports = { Message, Room, User };

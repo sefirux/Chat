@@ -1,9 +1,11 @@
+const imageUpload = require('../libs/imageStorage');
+const resize = require('../libs/imageResize');
 const { User } = require('../libs/ChatDatabase');
-const { uploadImg, getImgUrl } = require('../libs/storage');
 const router = require('express').Router();
 const roomsRouter = require('./rooms');
 const express = require('express');
 const path = require('path');
+
 
 router.use('/rooms', roomsRouter);
 router.use('/public', express.static(path.join(__dirname, '../uploads/images')));
@@ -25,31 +27,38 @@ router.get('/signup', (req, res) => {
         title: "Signup",
         action: "/signup",
         signup: true,
-        error: req.session.error
+        loginError: req.session.error
     });
     req.session.error = null;
 });
 
-router.post('/signup', uploadImg.single('avatar'), (req, res) => {
-    const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        avatarUrl: getImgUrl(req.file)
-    });
-
-    User.saveUser(newUser, (err, user) => {
-        if (user) {
-            req.session.userData = {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                avatarUrl: user.avatarUrl
-            };
-            res.redirect('/');
-        } else {
+router.post('/signup', imageUpload.single('avatar'), (req, res) => {
+    resize(req.file, req.file.fieldname, (err, imgUrl) => {
+        if(err){
             req.session.error = err;
             res.redirect('/signup');
+        } else {
+            const newUser = new User({
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password,
+                avatarUrl: imgUrl
+            });
+
+            User.saveUser(newUser, (err, user) => {
+                if (user) {
+                    req.session.userData = {
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        avatarUrl: user.avatarUrl
+                    };
+                    res.redirect('/');
+                } else {
+                    req.session.error = err;
+                    res.redirect('/signup');
+                }
+            });
         }
     });
 });
@@ -58,7 +67,7 @@ router.get('/signin', (req, res) => {
     res.render('login', {
         title: "Signin",
         action: "/signin",
-        error: req.session.error
+        loginError: req.session.error
     });
     req.session.error = null;
 });

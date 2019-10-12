@@ -38,6 +38,8 @@ UserSchema.statics.findUser = function (email, password, cb) {
     this.findUserByEmail(email, (err, user) => {
         if (user && user.passwordCompare(password)) {
             cb(null, user);
+        } else if (err) {
+            cb(err, null);
         } else {
             cb(ERR_USER_DOESNT_EXIST, null);
         }
@@ -72,6 +74,8 @@ UserSchema.statics.saveUser = function (user, cb) {
     this.findUserByEmail(user.email, (err, oldUser) => {
         if (oldUser) {
             cb(ERR_USER_ALREADY_EXIST, null);
+        } else if (err) {
+            cb(err, null);
         } else {
             user.save(cb);
         }

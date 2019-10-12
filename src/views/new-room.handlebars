@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div class="file-field input-field">
-                            <div class="btn">
+                            <div class="btn indigo accent-3">
                                 <span>Photo</span>
                                 <input id="photo" name="photo" type="file">
                             </div>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="row">
                             <div class="col s12 m12">
-                                <button type="submit" class="btn waves-effect waves-light right blue">Create room
+                                <button type="submit" class="btn waves-effect waves-light right indigo accent-3">Create room
                                     <i class="material-icons right">create</i></button>
                             </div>
                         </div>
@@ -43,10 +43,10 @@
     </div>
 </div>
 
-{{#if error}}
+{{#if roomError}}
 <script>
     window.addEventListener('load', () => {
-        let toastHTML = '<span>{{error}}</span><button class="btn-flat toast-action white-text">Ok</button>';
+        let toastHTML = '<span>{{roomError}}</span><button class="btn-flat toast-action white-text">Ok</button>';
         M.toast({ html: toastHTML, classes: 'red animated shake' });
     });
 </script>
