@@ -12,27 +12,18 @@ const MessageShema = new Schema({
         set: ObjectId,
         required: true
     },
-    msg: String,
-    sender: {
-        type: {
-            _id: Schema.Types.ObjectId,
-            name: String
-        },
+    _senderId: {
+        type: Schema.Types.ObjectId,
         required: true
     },
-    addressee: {
-        _id: Schema.Types.ObjectId,
-        name: {
-            type: String,
-            default: function () {
-                return 'Yo';
-            }
-        }
+    _addresseeId: {
+        type: Schema.Types.ObjectId
     },
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    msg: String
 });
 
 // STATICS

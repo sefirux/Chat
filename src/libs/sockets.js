@@ -1,6 +1,7 @@
-const { Message } = require('../libs/ChatDatabase');
+const { User, Message } = require('../libs/ChatDatabase');
 
-const MAX_SEARCH_USERS = 10;
+const ERR_USER_DELETED = 'error, user deleted';
+const ERR_MESSAGE_DELETED = 'Error, message deleted';
 const MAX_LOAD_MESSAGE = 20;
 
 const ChatSocketIO = (server, sessionMiddleware) => {
@@ -22,22 +23,15 @@ const ChatSocketIO = (server, sessionMiddleware) => {
             Message.countDocuments({ _roomId: roomId }, (err, count) => {
                 if (err) return console.error(err);
 
-                Message.loadMessages(roomId, countMSG, MAX_LOAD_MESSAGE, (err, messages) => {
+                Message.loadMessages(roomId, countMSG, MAX_LOAD_MESSAGE, async (err, messages) => {
                     if (err) return console.error(err);
-                    
-                    let oldMessages = [];
+
                     countMSG += MAX_LOAD_MESSAGE;
 
-                    messages.forEach(message => {
-                        oldMessages.push({
-                            sender: message.sender.name,
-                            date: message.date,
-                            msg: message.msg
-                        });
-                    });
+                    let messagesData = await loadMessageData(messages);
                     
                     io.to(socket.id).emit('load old messages', {
-                        messages: oldMessages,
+                        messages: messagesData,
                         messagesToLoad: countMSG < count
                     });
                 });
@@ -47,10 +41,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
         socket.to(roomId).on('send message', msg => {
             const message = new Message({
                 _roomId: roomId,
-                sender: {
-                    _id: userData.id,
-                    name: userData.name
-                },
+                _senderId: userData.id,
                 msg: msg
             });
             message.save((err, msg) => {
@@ -58,7 +49,10 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                     console.error(err);
                 } else {
                     io.to(roomId).emit('load new message', {
-                        sender: msg.sender.name,
+                        sender: {
+                            name: userData.name,
+                            avatarUrl: userData.avatarUrl
+                        },
                         date: msg.date,
                         msg: msg.msg
                     });
@@ -68,5 +62,23 @@ const ChatSocketIO = (server, sessionMiddleware) => {
         console.log(`User: ${userData.id} join to room: ${roomId}`);
     });
 };
+
+const loadMessageData = async messages => {
+    let messagesData = [];
+    for(const message of messages){
+        await User.findById(message._senderId, (err, user) => {
+            let oldMessage = {
+                sender: {
+                    name: user ? user.name : ERR_USER_DELETED,
+                    avatarUrl: user.avatarUrl ? user.avatarUrl : '/default/avatar-default.png'
+                },
+                date: message.date,
+                msg: message.msg ? message.msg : ERR_MESSAGE_DELETED
+            };
+            messagesData.push(oldMessage);
+        }); 
+    }
+    return messagesData;
+}
 
 module.exports = ChatSocketIO;
