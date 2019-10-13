@@ -1,5 +1,6 @@
 const { User, Message } = require('../libs/ChatDatabase');
 
+const DEFAULT_AVATAR = '/default/avatar-default.png';
 const ERR_USER_DELETED = 'error, user deleted';
 const ERR_MESSAGE_DELETED = 'Error, message deleted';
 const MAX_LOAD_MESSAGE = 20;
@@ -51,7 +52,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                     io.to(roomId).emit('load new message', {
                         sender: {
                             name: userData.name,
-                            avatarUrl: userData.avatarUrl
+                            avatarUrl: userData.avatarUrl ? userData.avatarUrl : DEFAULT_AVATAR
                         },
                         date: msg.date,
                         msg: msg.msg
@@ -70,7 +71,7 @@ const loadMessageData = async messages => {
             let oldMessage = {
                 sender: {
                     name: user ? user.name : ERR_USER_DELETED,
-                    avatarUrl: user.avatarUrl ? user.avatarUrl : '/default/avatar-default.png'
+                    avatarUrl: user.avatarUrl ? user.avatarUrl : DEFAULT_AVATAR
                 },
                 date: message.date,
                 msg: message.msg ? message.msg : ERR_MESSAGE_DELETED
