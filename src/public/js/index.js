@@ -11,8 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     M.Parallax.init(paralax);
     M.Sidenav.init(sidenavs);
     M.Slider.init(sliders, {
-        indicators: true,
-        height: 550,
+        height: 500,
         interval: 5000,
         duration: 1000
     });

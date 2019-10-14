@@ -9,6 +9,25 @@
     <!-- Import Animated CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
     <link rel="stylesheet" href="/css/styles.css">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+    <link rel="manifest" href="/icon/manifest.json">
+    <!-- Metadata -->
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -66,11 +85,11 @@
         {{#if myRoom}}
         <li><a href="#!">Config</a></li>
         {{else}}
-            {{#if favorite}}
-            <li><a href="#!">add to favorites</a></li>
-            {{else}}
-            <li><a href="#!">remove from favorites</a></li>
-            {{/if}}
+        {{#if favorite}}
+        <li><a href="#!">add to favorites</a></li>
+        {{else}}
+        <li><a href="#!">remove from favorites</a></li>
+        {{/if}}
         {{/if}}
     </ul>
 
@@ -79,7 +98,7 @@
             <div class="nav-wrapper">
                 <a href="" data-target="slide-out" class="sidenav-trigger left"><i class="material-icons">menu</i></a>
                 {{#if room}}
-                <a href="/room/id/{{room._id}}" class="brand-logo center">{{room.name}}</a>
+                <a href="/" class="brand-logo center">{{room.name}}</a>
                 {{else}}
                 <a href="/" class="brand-logo center">Chat</a>
                 {{/if}}

@@ -75,6 +75,10 @@ textarea.materialize-textarea:focus:not([readonly])+label {
     color: #3d5afe;
 }
 
+.slider .indicators .indicator-item.active {
+    background-color: #3d5afe;
+}
+
 @media only screen and (min-width: 993px) {
     nav a.sidenav-trigger {
         display: initial;
