@@ -13,21 +13,11 @@ const RoomSchema = new Schema({
         type: String,
         default: `Room-${Date.now}`
     },
-    admin: {
-        type: {
-            _id: Schema.Types.ObjectId,
-            name: String
-        },
-        required: true
+    adminId: {
+        type: Schema.Types.ObjectId, 
+        set: ObjectId
     },
-    members: {
-        type: [{
-            _id: Schema.Types.ObjectId,
-            name: String,
-            avatarUrl: String
-        }],
-        default: []
-    },
+    lastMessage: String,
     description: String,
     coverUrl: String,
     date: {
@@ -106,6 +96,11 @@ RoomSchema.methods.setAdmin = function (user) {
 
 RoomSchema.methods.setDescription = function (description) {
     this.description = description;
+    return this.save();
+};
+
+RoomSchema.methods.setLastMessage = function (message) {
+    this.lastMessage = message;
     return this.save();
 };
 

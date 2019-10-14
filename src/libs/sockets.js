@@ -12,10 +12,10 @@ const ChatSocketIO = (server, sessionMiddleware) => {
     });
 
     io.sockets.on('connection', socket => {
-        if (!socket.request.session.roomData) return;
+        if (!socket.request.session.room) return;
 
-        const roomId = socket.request.session.roomData.id;
-        const userData = socket.request.session.userData;
+        const roomId = socket.request.session.room._id;
+        const user = socket.request.session.user;
         let countMSG = 0;
 
         socket.join(roomId);
@@ -42,7 +42,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
         socket.to(roomId).on('send message', msg => {
             const message = new Message({
                 _roomId: roomId,
-                _senderId: userData.id,
+                _senderId: user._id,
                 msg: msg
             });
             message.save((err, msg) => {
@@ -51,8 +51,8 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                 } else {
                     io.to(roomId).emit('load new message', {
                         sender: {
-                            name: userData.name,
-                            avatarUrl: userData.avatarUrl ? userData.avatarUrl : DEFAULT_AVATAR
+                            name: user.name,
+                            avatarUrl: user.avatarUrl ? user.avatarUrl : DEFAULT_AVATAR
                         },
                         date: msg.date,
                         msg: msg.msg
@@ -60,7 +60,8 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                 }
             });
         });
-        console.log(`User: ${userData.id} join to room: ${roomId}`);
+        console.log(`User: ${user._id} join to room: ${roomId}`);
+        console.log(`Socket id: ${socket.id}`);
     });
 };
 
@@ -77,7 +78,7 @@ const loadMessageData = async messages => {
                 msg: message.msg ? message.msg : ERR_MESSAGE_DELETED
             };
             messagesData.push(oldMessage);
-        }); 
+        });
     }
     return messagesData;
 }

@@ -41,7 +41,7 @@ const createMessageNode = (effect, message) => {
             </div>
             <div class="row">
                 <div class="col s12">
-                    <span class="right"><strong>${new Date(message.date).toLocaleString()}</strong></span>
+                    <span class="right"><small>${new Date(message.date).toLocaleString()}</small></span>
                 </div>
             </div>
         </div>`;

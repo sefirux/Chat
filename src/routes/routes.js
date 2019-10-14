@@ -13,12 +13,12 @@ router.use('/public', express.static(path.join(__dirname, '../uploads/images')))
 router.use('/default', express.static(path.join(__dirname, '../uploads/default')));
 
 router.get('/', (req, res) => {
-    if (!req.session.userData) {
+    if (!req.session.user) {
         res.render('home');
         return;
     }
     res.render('home', {
-        userData: req.session.userData,
+        user: req.session.user,
         pageError: req.session.error,
         layout: 'logged-user'
     });
@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/signup', (req, res) => {
-    if (req.session.userData) {
+    if (req.session.user) {
         res.redirect('/');
         return;
     }
@@ -61,12 +61,7 @@ router.post('/signup', (req, res) => {
                     res.redirect('/signup');
                     return;
                 }
-                req.session.userData = {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    avatarUrl: user.avatarUrl
-                };
+                req.session.user = user;
                 res.redirect('/');
             });
         });
@@ -74,7 +69,7 @@ router.post('/signup', (req, res) => {
 });
 
 router.get('/signin', (req, res) => {
-    if (req.session.userData) {
+    if (req.session.user) {
         res.redirect('/');
         return;
     }
@@ -94,12 +89,7 @@ router.post('/signin', (req, res) => {
             return;
         }
 
-        req.session.userData = {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            avatarUrl: user.avatarUrl
-        };
+        req.session.user = user;
         res.redirect('/');
     });
 });

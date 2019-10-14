@@ -1,11 +1,45 @@
-<div class="parallax-container">
-    {{#if userData.coverUrl}}
-    <div class="parallax"><img src="{{userData.coverUrl}}"></div>
+<div class="parallax-container valign-wrapper">
+    {{#if user.coverUrl}}
+    <div class="parallax col s12"><img class="responsive-img" src="{{user.coverUrl}}"></div>
     {{else}}
-    <div class="parallax"><img src="/default/front-default.png"></div>
+    <div class="parallax col s12"><img class="responsive-img" src="/default/front-default.png"></div>
     {{/if}}
 
-    <h1>My profile</h1>
-    <h1>{{userData.id}}</h1>
-    <h2>{{userData.name}}</h2>
+    {{#if user.coverUrl}}
+    <img class="profile-avatar circle" src="{{user.avatarUrl}}">
+    <h2 class="profile-name white-text">{{user.name}}</h2>
+    {{else}}
+    <img class="profile-avatar circle" src="/default/avatar-default.png">
+    <h2 class="profile-name white-text">{{user.name}}</h2>
+    {{/if}}
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col s12 m6">
+            {{#if myRooms}}
+            <ul class="collection">
+                <li class="collection-item">
+                    <img src="{{coverUrl}}" alt="" class="circle">
+                    <span class="title">{{name}}</span>
+                    <p>{{lastMessage}}<br>
+                </li>
+            </ul>
+            {{/if}}
+        </div>
+        <div class="col s12 m6">
+            {{#if favoriteRooms}}
+            <ul class="collection">
+                <li class="collection-item">
+                    <img src="{{coverUrl}}" alt="" class="circle">
+                    <span class="title">{{name}}</span>
+                    <p>{{lastMessage}}</p>
+                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                </li>
+            </ul>
+            {{/if}}
+        </div>
+    </div>
+</div>
+<div class="fixed-action-btn">
+    <a href="/profile/id/{{user.id}}/config" class="btn-floating btn-large"><i class="large material-icons">mode_edit</i></a>
 </div>

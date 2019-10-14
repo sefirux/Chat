@@ -1,18 +1,18 @@
 const router = require('express').Router();
-const { Room } = require('../libs/ChatDatabase');
+const { Room, User } = require('../libs/ChatDatabase');
 const { resizeCover } = require('../libs/imageResize');
 const imageUpload = require('../libs/imageStorage');
 
-const MAX_ROOM_LOAD = 2;
+const MAX_ROOM_LOAD = 8;
 
 router.get('/new', (req, res) => {
-    if (!req.session.userData) {
+    if (!req.session.user) {
         res.redirect('/');
         return;
     }
 
     res.render('new-room', {
-        userData: req.session.userData,
+        user: req.session.user,
         roomError: req.session.error,
         layout: 'logged-user',
         roomOn: false
@@ -21,12 +21,12 @@ router.get('/new', (req, res) => {
 });
 
 router.post('/new', async (req, res) => {
-    if (!req.session.userData) {
+    if (!req.session.user) {
         res.redirect('/');
         return;
     }
 
-    const userData = req.session.userData;
+    const user = req.session.user;
 
     imageUpload.single('front')(req, res, err => {
         if (err) {
@@ -38,10 +38,7 @@ router.post('/new', async (req, res) => {
         resizeCover(req.file, (err, coverUrl) => {
             const room = new Room({
                 name: req.body.name,
-                admin: {
-                    _id: userData._id,
-                    name: userData.name
-                },
+                adminId: user._id,
                 description: req.body.description,
                 coverUrl: coverUrl
             });
@@ -52,6 +49,9 @@ router.post('/new', async (req, res) => {
                     res.redirect('new');
                     return;
                 }
+                User.findById(req.session.user._id, (err, user) => {
+                    user.addRoom(room._id);
+                });
                 res.redirect(`id/${room._id}`);
             });
         });
@@ -59,7 +59,7 @@ router.post('/new', async (req, res) => {
 });
 
 router.get('/id/:id', (req, res) => {
-    if (!req.session.userData) {
+    if (!req.session.user) {
         res.redirect('/');
         return;
     }
@@ -70,22 +70,20 @@ router.get('/id/:id', (req, res) => {
             res.redirect('/search');
             return;
         }
-        req.session.roomData = {
-            id: room._id,
-            name: room.name,
-            coverUrl: room.coverUrl
-        };
+
+        req.session.room = room;
+
         res.render('room', {
-            userData: req.session.userData,
+            user: req.session.user,
             layout: 'logged-user',
-            roomData: room,
-            roomOn: true
+            room: room,
+            myRoom: (room.adminId == req.session.user._id)
         });
     })
 });
 
 router.get('/search', (req, res) => {
-    if (!req.session.userData) {
+    if (!req.session.user) {
         res.redirect('/');
         return;
     }
@@ -93,7 +91,7 @@ router.get('/search', (req, res) => {
 });
 
 router.get('/search/:page', (req, res) => {
-    if (!req.session.userData) {
+    if (!req.session.user) {
         res.redirect('/');
         return;
     }
@@ -115,7 +113,7 @@ router.get('/search/:page', (req, res) => {
             const data = {
                 layout: 'logged-user',
                 pagesData: pagesData,
-                userData: req.session.userData,
+                user: req.session.user,
                 page: page,
                 rooms: rooms,
                 roomOn: false,

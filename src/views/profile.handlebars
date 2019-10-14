@@ -1,2 +1,9 @@
-<h1>{{userData.id}}</h1>
-<h2>{{userData.name}}</h2>
+<div class="parallax-container">
+    {{#if user.coverUrl}}
+    <div class="parallax"><img src="{{user.coverUrl}}"></div>
+    {{else}}
+    <div class="parallax"><img src="/default/userCover.png"></div>
+    {{/if}}
+</div>
+<h1>{{user.id}}</h1>
+<h2>{{user.name}}</h2>
