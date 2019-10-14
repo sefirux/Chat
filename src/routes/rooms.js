@@ -52,13 +52,13 @@ router.post('/new', async (req, res) => {
                     res.redirect('new');
                     return;
                 }
-                res.redirect(`room/${room._id}`);
+                res.redirect(`id/${room._id}`);
             });
         });
     });
 });
 
-router.get('/room/:id', (req, res) => {
+router.get('/id/:id', (req, res) => {
     if (!req.session.userData) {
         res.redirect('/');
         return;
@@ -67,7 +67,7 @@ router.get('/room/:id', (req, res) => {
     Room.findById(req.params.id, (err, room) => {
         if (err) {
             req.session.error = err;
-            res.redirect('/find');
+            res.redirect('/search');
             return;
         }
         req.session.roomData = {
@@ -84,15 +84,15 @@ router.get('/room/:id', (req, res) => {
     })
 });
 
-router.get('/find', (req, res) => {
+router.get('/search', (req, res) => {
     if (!req.session.userData) {
         res.redirect('/');
         return;
     }
-    res.redirect('find/0');
+    res.redirect('search/0');
 });
 
-router.get('/find/:page', (req, res) => {
+router.get('/search/:page', (req, res) => {
     if (!req.session.userData) {
         res.redirect('/');
         return;
@@ -122,10 +122,9 @@ router.get('/find/:page', (req, res) => {
                 findError: req.session.error
             };
             req.session.error = null;
-            res.render('find-room', data);
+            res.render('search-room', data);
         });
     });
 });
-
 
 module.exports = router;

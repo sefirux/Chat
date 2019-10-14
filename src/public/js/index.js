@@ -3,9 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let elems = document.querySelectorAll('.autocomplete');
     let sidenavs = document.querySelectorAll('.sidenav');
     let sliders = document.querySelectorAll('.slider');
+    var parallax = document.querySelectorAll('.parallax');
 
-    M.Autocomplete.init(elems);
     M.Materialbox.init(materialBoxes);
+    M.Autocomplete.init(elems);
+    M.Parallax.init(parallax);
     M.Sidenav.init(sidenavs);
     M.Slider.init(sliders, {
         indicators: true,

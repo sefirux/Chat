@@ -7,8 +7,8 @@ let lastMessage;
 
 const bottom = () => window.scrollTo(0, document.body.scrollHeight);
 
-const botonesVolver = document.querySelectorAll('.volver-btn');
-botonesVolver.forEach(b => {
+const bottomBtn = document.querySelectorAll('.bottom-btn');
+bottomBtn.forEach(b => {
     b.addEventListener('click', e => {
         e.preventDefault();
         bottom();
@@ -45,7 +45,6 @@ const createMessageNode = (effect, message) => {
                 </div>
             </div>
         </div>`;
-
     return msg;
 }
 

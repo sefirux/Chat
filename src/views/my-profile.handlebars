@@ -1,0 +1,11 @@
+<div class="parallax-container">
+    {{#if userData.coverUrl}}
+    <div class="parallax"><img src="{{userData.coverUrl}}"></div>
+    {{else}}
+    <div class="parallax"><img src="/default/front-default.png"></div>
+    {{/if}}
+
+    <h1>My profile</h1>
+    <h1>{{userData.id}}</h1>
+    <h2>{{userData.name}}</h2>
+</div>

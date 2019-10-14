@@ -2,12 +2,13 @@ const imageUpload = require('../libs/imageStorage');
 const { resizeAvatar } = require('../libs/imageResize');
 const { User } = require('../libs/ChatDatabase');
 const router = require('express').Router();
+const profilesRouter = require('./profiles');
 const roomsRouter = require('./rooms');
 const express = require('express');
 const path = require('path');
 
-
-router.use('/rooms', roomsRouter);
+router.use('/profile', profilesRouter);
+router.use('/room', roomsRouter);
 router.use('/public', express.static(path.join(__dirname, '../uploads/images')));
 router.use('/default', express.static(path.join(__dirname, '../uploads/default')));
 

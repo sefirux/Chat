@@ -2,7 +2,7 @@
     <div class="row">
         {{#unless rooms}}
         <div class="col s12 center animated infinite slow bounce">
-            <h3 class="">Oops, there are no rooms around here.</h3>
+            <h4 class="">Oops, there are no rooms around here.</h4>
         </div>
         {{/unless}}
         {{#each rooms}}
@@ -14,7 +14,7 @@
                     {{else}}
                     <img src="/default/front-default.png">
                     {{/if}}
-                    <a href="/rooms/room/{{_id}}" class="btn-floating halfway-fab waves-effect waves-light green"><i
+                    <a href="/room/id/{{_id}}" class="btn-floating halfway-fab waves-effect waves-light green"><i
                             class="material-icons">subdirectory_arrow_right</i></a>
                 </div>
                 <div class="card-content">
