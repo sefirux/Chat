@@ -33,7 +33,7 @@
   <li><a href="https://www.npmjs.com/package/validator">Validator</a><span>: Para validar la información ingresada por el usuario.</span></li>
 </ul>
 
-<p>Para el <strong>front-end</strong> se utilizo <a href="https://materializecss.com"><strong>Materialize CSS</strong> y <a href="https://github.com/daneden/animate.css"><strong>Animated CSS</strong></a></p>
+<p>Para el <strong>front-end</strong> se utilizo <a href="https://materializecss.com"><strong>Materialize CSS</strong></a> y <a href="https://github.com/daneden/animate.css"><strong>Animated CSS</strong></a></p>
 
 ##Acerca de
 
