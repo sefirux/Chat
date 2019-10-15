@@ -1,7 +1,6 @@
 # Chat - ComiIT 2019
 
-<h2 align="center">Chat Rooms</h2>
-<h4 align="center">Salas de chat en tiempo real!</h4>
+<h2 align="center">Salas de chat en tiempo real!</h2>
 
 <p align="center">
   <a href="#descripcion">Descripción</a> •
