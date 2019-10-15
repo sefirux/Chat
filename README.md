@@ -10,5 +10,5 @@
   <a href="#acerca-de">Acerca de</a>
 </p>
 
-<a href="#!"><img align="left" width="10%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG"></a>
-<a href="#!"><img align="left" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG"></a>
+<a href="#!"><img align="left" width="50%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG"></a>
+<a href="#!"><img align="left" width="50%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG"></a>
