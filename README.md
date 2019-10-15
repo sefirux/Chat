@@ -7,9 +7,9 @@
   <a href="#acerca-de">Acerca de</a>
 </p>
 
-<div>
-  <img width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG">
-  <img width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG">
+<div style="width: 100%">
+  <img width="50%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG">
+  <img width="50%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG">
 </div>
 
 ## Descripcion
