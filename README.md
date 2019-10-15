@@ -8,8 +8,8 @@
 </p>
 
 <div style="width: 100%">
-  <img width="50%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG">
-  <img width="50%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG">
+  <img width="48%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG">
+  <img width="48%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG">
 </div>
 
 ## Descripcion
