@@ -7,8 +7,10 @@
   <a href="#acerca-de">Acerca de</a>
 </p>
 
-<a href="#!"><img width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG"></a>
-<a href="#!"><img width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG"></a>
+<div>
+  <img width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG">
+  <img width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG">
+</div>
 
 ## Descripcion
   En esta aplicación web, desarrollada en Node.js, podes crear o unirte a distintas salas de chat sobre diversos tópicos y hablar en tiempo real con otros usuarios.
