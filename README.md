@@ -3,7 +3,6 @@
 <p align="center">
   <a href="#descripcion">Descripción</a> •
   <a href="#dependencias">Dependencias</a> •
-  <a href="#como-utilizar">Como utilizar</a> •
   <a href="#acerca-de">Acerca de</a>
 </p>
 
@@ -33,3 +32,9 @@
   <li><a href="https://www.npmjs.com/package/jimp">Jimp</a><span>: Para redimencionar las fotos subidas al servidor.</span></li>
   <li><a href="https://www.npmjs.com/package/validator">Validator</a><span>: Para validar la información ingresada por el usuario.</span></li>
 </ul>
+
+<p>Para el <strong>front-end</strong> se utilizo <a href="https://materializecss.com"><strong>Materialize CSS</strong> y <a href="https://github.com/daneden/animate.css"><strong>Animated CSS</strong></a></p>
+
+##Acerca de
+
+Desarrollado como proyecto final para <a href="http://www.comunidadit.org">ComunidadIT</a> en el 2019, por Paz Jonathan Nicolas.
