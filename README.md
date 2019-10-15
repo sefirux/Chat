@@ -14,3 +14,8 @@
 
 ## Descripcion
   En esta aplicación web, desarrollada en Node.js, podes crear o unirte a distintas salas de chat sobre diversos tópicos y hablar en tiempo real con otros usuarios.
+
+## Dependencias
+  Para llevar a cabo la aplicacion fueron necesarias las siguientes dependencias:
+  
+  
