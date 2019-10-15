@@ -6,21 +6,22 @@ Router.get('/id/:id', (req, res) => {
         res.redirect('/');
         return;
     }
-    User.findUserById(req.params.id, (err, user) => {
+    User.findUserById(req.params.id, async (err, user) => {
         if (err) {
             req.session.error = err;
             res.redirect('/');
             return;
         }
+
         if (req.params.id === req.session.user._id) {
             res.render('my-profile', {
                 layout: 'logged-user',
-                user: user
+                user: user,
             });
         } else {
             res.render('profile', {
                 layout: 'logged-user',
-                user: user
+                user: user,
             });
         }
     });

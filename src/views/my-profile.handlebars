@@ -16,30 +16,37 @@
 <div class="container">
     <div class="row">
         <div class="col s12 m6">
-            {{#if myRooms}}
-            <ul class="collection">
-                <li class="collection-item">
-                    <img src="{{coverUrl}}" alt="" class="circle">
-                    <span class="title">{{name}}</span>
-                    <p>{{lastMessage}}<br>
+            <ul id="my-rooms" class="collection">
+                <!--
+                <li class="collection-item avatar">
+                    <a href="/room/id/{{_id}}"><img src="/default/front-default.png" alt="" class="circle"></a>
+                    <span class="title"><strong>{{name}}</strong></span><br/>
+                    <span>{{lastMessage.sender}}: </span>
+                    <span>{{lastMessage.message}}</span><br/>
+                    <span class="right"small>{{lastMessage.date}}</small></span><br/>
                 </li>
+                -->
             </ul>
-            {{/if}}
         </div>
         <div class="col s12 m6">
-            {{#if favoriteRooms}}
-            <ul class="collection">
-                <li class="collection-item">
-                    <img src="{{coverUrl}}" alt="" class="circle">
-                    <span class="title">{{name}}</span>
-                    <p>{{lastMessage}}</p>
+            <ul id="favorite-rooms" class="collection">
+                <!--
+                <li class="collection-item avatar">
+                    <a href="/room/id/{{_id}}"><img src="{{coverUrl}}" alt="" class="circle"></a>
+                    <span class="title"><strong>{{name}}</strong></span><br/>
+                    <span>{{lastMessage.sender}}: </span>
+                    <span>{{lastMessage.message}}</span><br/>
+                    <span class="right"small>{{lastMessage.date}}</small></span><br/>
                     <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
                 </li>
+                -->
             </ul>
-            {{/if}}
         </div>
     </div>
 </div>
 <div class="fixed-action-btn">
     <a href="/profile/id/{{user.id}}/config" class="btn-floating btn-large"><i class="large material-icons">mode_edit</i></a>
 </div>
+
+<script type="application/javascript" src="/socket.io/socket.io.js"></script>
+<script type="application/javascript" src="/js/profileSocketClient.js"></script>

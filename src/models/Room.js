@@ -17,7 +17,11 @@ const RoomSchema = new Schema({
         type: Schema.Types.ObjectId, 
         set: ObjectId
     },
-    lastMessage: String,
+    lastMessage: {
+        message: String,
+        sender: String,
+        date: String
+    },
     description: String,
     coverUrl: String,
     date: {
@@ -30,6 +34,10 @@ const RoomSchema = new Schema({
 
 RoomSchema.statics.findRoomByName = function (name, cb) {
     this.findOne({ name: name }, cb);
+}
+
+RoomSchema.statics.findRoomById = function (id, cb) {
+    this.find({_id: id}, cb);
 }
 
 RoomSchema.statics.loadRooms = function (sortOpc, min, max, cb) {

@@ -2,7 +2,10 @@
     <div class="row">
         {{#unless rooms}}
         <div class="col s12 center animated infinite slow bounce">
-            <h4 class="">Oops, there are no rooms around here.</h4>
+            <img id="not-found" src="/default/search.jpg">
+        </div>
+        <div class="col s12 center">
+            <h4>not found...</h4>
         </div>
         {{/unless}}
         {{#each rooms}}

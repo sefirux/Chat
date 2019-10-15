@@ -126,3 +126,7 @@ main {
     position: relative;
     top: 23%;
 }
+
+#not-found {
+    width: 50vh;
+}
