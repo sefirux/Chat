@@ -1,4 +1,4 @@
-<h2 align="center">Chat Rooms<br><i>Salas de chat en tiempo real!</i></h2>
+<h2 align="center">Chat Rooms<br><small><i>Salas de chat en tiempo real!</i></small></h2>
 
 <p align="center">
   <a href="#descripcion">Descripción</a> •
