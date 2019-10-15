@@ -10,6 +10,5 @@
 <a href="#!"><img align="left" width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-3.PNG"></a>
 <a href="#!"><img align="left" width="45%" src="https://github.com/P-Jonathan/Chat/blob/master/src/uploads/default/example-4.PNG"></a>
 
-<p id="descripcion">
+## Descripcion
   En esta aplicación web desarrollada en Node.js podes crear tus propias salas de chat, unirte y hablar(en tiempo real) con otros usuarios.
-</p>
