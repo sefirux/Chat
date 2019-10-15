@@ -24,9 +24,9 @@
 <ul>
   <li><a href="https://mongoosejs.com">Mongoose</a><span>: Para manejar la base de datos (mongodb) se utilizo mongoose.</span></li>
   <li><a href="https://expressjs.com/es/">Express</a><span>: Para manejar las rutas.</span></li>
-  <li><a href="https://www.npmjs.com/package/express-session"></a>Express-session<span>: Para mantener sesiones de usuario.</span></li>
+  <li><a href="https://www.npmjs.com/package/express-session">Express-session</a><span>: Para mantener sesiones de usuario.</span></li>
   <li><a href="https://socket.io/">Socket.IO</a><span>: Para mantener al usuario comunicado en tiempo real con el servidor.</span></li>
-  <li><a href="https://www.npmjs.com/package/express-handlebars"></a>Express Handlebars<span>: Para el manejo de vistas.</span></li>
+  <li><a href="https://www.npmjs.com/package/express-handlebars">Express Handlebars</a><span>: Para el manejo de vistas.</span></li>
   <li><a href="https://github.com/helpers/handlebars-helpers">Handlebars helpers</a><span>: Helpers para handlebars.</span></li>
   <li><a href="https://www.npmjs.com/package/bcrypt">Bcrypt</a><span>: Para encriptar las contraseñas.</span></li>
   <li><a href="https://www.npmjs.com/package/multer">Multer</a><span>: Para subir los archivos al servidor.</span></li>
