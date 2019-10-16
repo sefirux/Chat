@@ -37,4 +37,4 @@
 
 ## Acerca de
 
-Desarrollado como proyecto final para <a href="http://www.comunidadit.org">ComunidadIT</a> en el 2019, por Paz <a href="https://www.linkedin.com/in/jonathan-nicolas-paz/">Jonathan Nicolas</a>.
+Desarrollado como proyecto final para <a href="http://www.comunidadit.org">ComunidadIT</a> en el 2019, por <a href="https://www.linkedin.com/in/jonathan-nicolas-paz/">Paz Jonathan Nicolas</a>.
