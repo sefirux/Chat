@@ -62,35 +62,33 @@ const ChatSocketIO = (server, sessionMiddleware) => {
         });
 
         if (socket.request.session.room) {
-            const roomId = socket.request.session.room._id;
-            const user = socket.request.session.user;
+            socket.room = socket.request.session.room;
+            socket.user = socket.request.session.user;
+            socket.request.session.room = null;
             let countMSG = 0;
 
-            socket.join(roomId);
+            socket.join(socket.room._id);
 
-            socket.to(roomId).on('old messages', () => {
-                Message.countDocuments({ _roomId: roomId }, (err, count) => {
-                    if (err) return console.error(err);
+            socket.to(socket.room._id).on('old messages', () => {
+                loadMessages(socket.room._id, countMSG, MAX_LOAD_MESSAGE, async (err, data) => {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                    let messagesData = await loadMessageData(data.messages);
+                    countMSG += MAX_LOAD_MESSAGE;
 
-                    Message.loadMessages(roomId, countMSG, MAX_LOAD_MESSAGE, async (err, messages) => {
-                        if (err) return console.error(err);
-
-                        countMSG += MAX_LOAD_MESSAGE;
-
-                        let messagesData = await loadMessageData(messages);
-
-                        io.to(socket.id).emit('load old messages', {
-                            messages: messagesData,
-                            messagesToLoad: countMSG < count
-                        });
+                    io.to(socket.id).emit('load old messages', {
+                        messages: messagesData,
+                        messagesToLoad: countMSG < data.count
                     });
                 });
             });
 
-            socket.to(roomId).on('send message', msg => {
+            socket.to(socket.room._id).on('send message', msg => {
                 const message = new Message({
-                    _roomId: roomId,
-                    _senderId: user._id,
+                    _roomId: socket.room._id,
+                    _senderId: socket.user._id,
                     msg: msg
                 });
                 message.save((err, msg) => {
@@ -99,22 +97,12 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                         return;
                     }
 
-                    Room.findById(roomId, (err, room) => {
-                        if (err) {
-                            console.error(err);
-                        } else {
-                            room.setLastMessage({
-                                message: msg.msg,
-                                sender: user.name,
-                                date: msg.date.toLocaleString()
-                            });
-                        }
-                    });
+                    saveLastMessage(socket.room._id, msg, socket.user.name);
 
-                    io.to(roomId).emit('load new message', {
+                    io.to(socket.room._id).emit('load new message', {
                         sender: {
-                            name: user.name,
-                            avatarUrl: user.avatarUrl ? user.avatarUrl : DEFAULT_AVATAR
+                            name: socket.user.name,
+                            avatarUrl: socket.user.avatarUrl ? socket.user.avatarUrl : DEFAULT_AVATAR
                         },
                         date: msg.date,
                         msg: msg.msg
@@ -122,7 +110,7 @@ const ChatSocketIO = (server, sessionMiddleware) => {
                 });
             });
 
-            console.log(`User: ${user._id} join to room: ${roomId}`);
+            console.log(`User: ${socket.user._id} join to room: ${socket.room._id}`);
         }
     });
 };
@@ -143,6 +131,39 @@ const loadMessageData = async messages => {
         });
     }
     return messagesData;
-}
+};
+
+const loadMessages = (roomId, min, max, cb) => {
+    Message.countDocuments({ _roomId: roomId }, (err, count) => {
+        if (err) {
+            cb(err, null);
+            return;
+        }
+        Message.loadMessages(roomId, min, max, (err, messages) => {
+            if (err) {
+                cb(err, null);
+                return;
+            }
+            cb(null, {
+                messages: messages,
+                count: count
+            });
+        });
+    });
+};
+
+const saveLastMessage = (roomId, message, senderName) => {
+    Room.findById(roomId, (err, room) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        room.setLastMessage({
+            message: message.msg,
+            sender: senderName,
+            date: message.date
+        });
+    });
+};
 
 module.exports = ChatSocketIO;
