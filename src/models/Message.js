@@ -28,12 +28,18 @@ const MessageShema = new Schema({
 
 // STATICS
 
-MessageShema.statics.loadMessages = function (roomId, min, max, cb) {
-    this.find({ _roomId: roomId })
-        .skip(min)
-        .limit(max)
-        .sort({ date: -1 })
-        .exec(cb);
+MessageShema.statics.loadMessages = async function (roomId, min, max) {
+    try {
+        const count = await this.countDocuments({ _roomId: roomId });
+        const messages = await this.find({ _roomId: roomId })
+            .skip(min)
+            .limit(max)
+            .sort({ date: -1 });
+
+        return { messages: messages, count: count };
+    } catch (err) {
+        throw err;
+    }
 }
 
 const Message = mongoose.model('Message', MessageShema);

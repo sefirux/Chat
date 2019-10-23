@@ -20,20 +20,21 @@ const ChatSocketIO = (server, sessionMiddleware) => {
             let myRooms = [];
 
             for (const id of user.myRooms) {
-                await Room.findById(id, (err, room) => {
-                    if (room) {
-                        myRooms.push({
-                            _id: room._id,
-                            name: room.name,
-                            coverUrl: room.coverUrl ? room.coverUrl : DEFAULT_PAGE_COVER,
-                            lastMessage: {
-                                message: room.lastMessage.message,
-                                sender: room.lastMessage.sender,
-                                date: room.lastMessage.date
-                            }
-                        });
-                    }
-                });
+                try {
+                    const room = await Room.findById(id);
+                    myRooms.push({
+                        _id: room._id,
+                        name: room.name,
+                        coverUrl: room.coverUrl ? room.coverUrl : DEFAULT_PAGE_COVER,
+                        lastMessage: {
+                            message: room.lastMessage.message,
+                            sender: room.lastMessage.sender,
+                            date: room.lastMessage.date
+                        }
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
             }
 
             io.to(socket.id).emit('load my rooms', myRooms);
@@ -44,83 +45,84 @@ const ChatSocketIO = (server, sessionMiddleware) => {
             let favoriteRooms = [];
 
             for (const id of user.favoriteRooms) {
-                await Room.findById(id, (err, room) => {
-                    if (room) {
-                        favoriteRooms.push({
-                            _id: room._id,
-                            name: room.name,
-                            coverUrl: room.coverUrl ? room.coverUrl : DEFAULT_PAGE_COVER,
-                            lastMessage: {
-                                message: room.lastMessage.message,
-                                sender: room.lastMessage.sender,
-                                date: room.lastMessage.date
-                            }
-                        });
-                    }
-                });
+                try {
+                    const room = await Room.findById(id);
+                    favoriteRooms.push({
+                        _id: room._id,
+                        name: room.name,
+                        coverUrl: room.coverUrl ? room.coverUrl : DEFAULT_PAGE_COVER,
+                        lastMessage: {
+                            message: room.lastMessage.message,
+                            sender: room.lastMessage.sender,
+                            date: room.lastMessage.date
+                        }
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
             }
 
             io.to(socket.id).emit('load favorite rooms', favoriteRooms);
         });
 
-        if (socket.request.session.room) {
-            socket.room = socket.request.session.room;
-            socket.user = socket.request.session.user;
-            socket.request.session.room = null;
-            let countMSG = 0;
+        if (!socket.request.session.room)
+            return;
 
-            socket.join(socket.room._id);
+        socket.room = socket.request.session.room;
+        socket.user = socket.request.session.user;
+        socket.request.session.room = null;
+        let countMSG = 0;
 
-            socket.to(socket.room._id).on('old messages', () => {
-                loadMessages(socket.room._id, countMSG, MAX_LOAD_MESSAGE, async (err, data) => {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
-                    let messagesData = await loadMessageData(data.messages);
-                    countMSG += MAX_LOAD_MESSAGE;
+        socket.join(socket.room._id);
 
-                    io.to(socket.id).emit('load old messages', {
-                        messages: messagesData,
-                        messagesToLoad: countMSG < data.count
-                    });
+        socket.to(socket.room._id).on('old messages', async () => {
+            try {
+                const data = await Message.loadMessages(socket.room._id, countMSG, MAX_LOAD_MESSAGE);
+                const messagesData = await loadMessageData(data.messages);
+                countMSG += MAX_LOAD_MESSAGE;
+                
+                io.to(socket.id).emit('load old messages', {
+                    messages: messagesData,
+                    messagesToLoad: countMSG < data.count
                 });
+
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        socket.to(socket.room._id).on('send message', async msg => {
+            const message = new Message({
+                _roomId: socket.room._id,
+                _senderId: socket.user._id,
+                msg: msg
             });
+            try {
+                const result = await message.save();
+                saveLastMessage(socket.room._id, result, socket.user.name);
 
-            socket.to(socket.room._id).on('send message', msg => {
-                const message = new Message({
-                    _roomId: socket.room._id,
-                    _senderId: socket.user._id,
-                    msg: msg
+                io.to(socket.room._id).emit('load new message', {
+                    sender: {
+                        name: socket.user.name,
+                        avatarUrl: socket.user.avatarUrl ? socket.user.avatarUrl : DEFAULT_AVATAR
+                    },
+                    date: result.date,
+                    msg: result.msg
                 });
-                message.save((err, msg) => {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
+            } catch (err) {
+                console.error(err);
+            }
+        });
 
-                    saveLastMessage(socket.room._id, msg, socket.user.name);
-
-                    io.to(socket.room._id).emit('load new message', {
-                        sender: {
-                            name: socket.user.name,
-                            avatarUrl: socket.user.avatarUrl ? socket.user.avatarUrl : DEFAULT_AVATAR
-                        },
-                        date: msg.date,
-                        msg: msg.msg
-                    });
-                });
-            });
-
-            console.log(`User: ${socket.user._id} join to room: ${socket.room._id}`);
-        }
+        console.log(`User: ${socket.user._id} join to room: ${socket.room._id}`);
     });
 };
 
 const loadMessageData = async messages => {
     let messagesData = [];
     for (const message of messages) {
-        await User.findById(message._senderId, (err, user) => {
+        try {
+            const user = await User.findById(message._senderId);
             let oldMessage = {
                 sender: {
                     name: user ? user.name : ERR_USER_DELETED,
@@ -130,28 +132,11 @@ const loadMessageData = async messages => {
                 msg: message.msg ? message.msg : ERR_MESSAGE_DELETED
             };
             messagesData.push(oldMessage);
-        });
+        } catch (err) {
+            console.error(err);
+        }
     }
     return messagesData;
-};
-
-const loadMessages = (roomId, min, max, cb) => {
-    Message.countDocuments({ _roomId: roomId }, (err, count) => {
-        if (err) {
-            cb(err, null);
-            return;
-        }
-        Message.loadMessages(roomId, min, max, (err, messages) => {
-            if (err) {
-                cb(err, null);
-                return;
-            }
-            cb(null, {
-                messages: messages,
-                count: count
-            });
-        });
-    });
 };
 
 const saveLastMessage = (roomId, message, senderName) => {
