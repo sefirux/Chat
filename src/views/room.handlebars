@@ -20,7 +20,8 @@
             <form id="chat-input" class="scrollspy col s12" autocomplete="off">
                 <div class="row">
                     <div class="input-field col s9 m10 l11">
-                        <input type="text" name="new-message" id="new-message" class="materialize-textarea" maxlength="140"></input>
+                        <input type="text" name="new-message" id="new-message" class="materialize-textarea"
+                            maxlength="140"></input>
                         <label for="new-message">New message</label>
                     </div>
                     <button class="btn-floating btn-large waves-effect waves-light indigo accent-3 right"
@@ -31,5 +32,12 @@
     </div>
 </footer>
 
+<div class="bottom-btn fixed-action-btn">
+    <a class="btn-floating btn indigo accent-3">
+        <i class="large material-icons">arrow_downward</i>
+    </a>
+</div>
+
 <script type="application/javascript" src="/socket.io/socket.io.js"></script>
 <script src="/js/socketClient.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
