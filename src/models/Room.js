@@ -3,6 +3,7 @@ const { Schema } = require('mongoose');
 const { ObjectId } = require('mongoose').mongo;
 
 const ERR_ROOM_ALREADY_EXIST = 'Room already exists';
+const ERR_ROOM_DOES_NOT_EXIST = 'The room does not exist.';
 
 const RoomSchema = new Schema({
     _id: {
@@ -14,7 +15,7 @@ const RoomSchema = new Schema({
         default: `Room-${Date.now}`
     },
     adminId: {
-        type: Schema.Types.ObjectId, 
+        type: Schema.Types.ObjectId,
         set: ObjectId
     },
     lastMessage: {
@@ -36,18 +37,31 @@ RoomSchema.statics.findRoomByName = function (name, cb) {
     this.findOne({ name: name }, cb);
 }
 
-RoomSchema.statics.findRoomById = function (id, cb) {
-    this.find({_id: id}, cb);
-}
+RoomSchema.statics.findRoomById = async function (id) {
+    try {
+        const room = await this.findById(id);
+        if (room)
+            return room;
+        else
+            throw { message: ERR_ROOM_DOES_NOT_EXIST };
+    } catch (err) {
+        throw err.message;
+    }
+};
 
-RoomSchema.statics.loadRooms = function (sortOpc, min, max, cb) {
-    this.find()
-        .skip(min)
-        .limit(max)
-        .sort(sortOpc)
-        .exec(cb);
-}
-
+RoomSchema.statics.loadRooms = async function (sortOpc, min, max) {
+    try {
+        const rooms = await this.find()
+            .skip(min)
+            .limit(max)
+            .sort(sortOpc)
+            .exec();
+        return rooms;
+    } catch (err) {
+        throw err.message;
+    }
+};
+/*
 RoomSchema.statics.saveRoom = function (room, cb) {
     this.findRoomByName(room.name, (err, oldRoom) => {
         if (oldRoom) {
@@ -59,6 +73,19 @@ RoomSchema.statics.saveRoom = function (room, cb) {
         }
     });
 }
+*/
+
+RoomSchema.statics.saveRoom = async function (room) {
+    try {
+        const oldRoom = await this.findOne({ name: room.name });
+        if (!oldRoom)
+            return room.save();
+        else
+            throw { message: ERR_ROOM_ALREADY_EXIST };
+    } catch (err) {
+        throw err.message;
+    }
+};
 
 // METHODS
 

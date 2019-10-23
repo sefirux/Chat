@@ -1,6 +1,4 @@
-const imageUpload = require('../libs/imageStorage');
-const { resizeAvatar } = require('../libs/imageResize');
-const { User } = require('../libs/ChatDatabase');
+const User = require('../models/User');
 const router = require('express').Router();
 const profilesRouter = require('./profiles');
 const roomsRouter = require('./rooms');
@@ -23,7 +21,7 @@ router.get('/', (req, res) => {
         layout: 'logged-user'
     });
     req.session.error = null;
-});
+})
 
 router.get('/signup', (req, res) => {
     if (req.session.user) {
@@ -37,36 +35,24 @@ router.get('/signup', (req, res) => {
         loginError: req.session.error
     });
     req.session.error = null;
-});
+})
 
-router.post('/signup', (req, res) => {
-    imageUpload.single('avatar')(req, res, err => {
-        if (err) {
-            req.session.error = err.message;
-            res.redirect('/signup');
-            return;
-        }
-
-        resizeAvatar(req.file, (err, imgUrl) => {
-            const newUser = new User({
-                name: req.body.name,
-                email: req.body.email,
-                password: req.body.password,
-                avatarUrl: imgUrl
-            });
-
-            User.saveUser(newUser, (err, user) => {
-                if (err) {
-                    req.session.error = err;
-                    res.redirect('/signup');
-                    return;
-                }
-                req.session.user = user;
-                res.redirect('/');
-            });
-        });
+router.post('/signup', async (req, res) => {
+    const newUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
     });
-});
+
+    try {
+        const user = await User.saveUser(newUser);
+        req.session.user = user;
+        res.redirect('/');
+    } catch (err) {
+        req.session.error = err;
+        res.redirect('/signup');
+    }
+})
 
 router.get('/signin', (req, res) => {
     if (req.session.user) {
@@ -79,24 +65,22 @@ router.get('/signin', (req, res) => {
         loginError: req.session.error
     });
     req.session.error = null;
-});
+})
 
-router.post('/signin', (req, res) => {
-    User.findUser(req.body.email, req.body.password, (err, user) => {
-        if (err) {
-            req.session.error = err;
-            res.redirect('/signin');
-            return;
-        }
-
+router.post('/signin', async (req, res) => {
+    try {
+        const user = await User.findUserByEmailAndPassword(req.body.email, req.body.password);
         req.session.user = user;
         res.redirect('/');
-    });
-});
+    } catch (err) {
+        req.session.error = err;
+        res.redirect('/signin');
+    }
+})
 
 router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
-});
+})
 
 module.exports = router;

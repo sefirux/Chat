@@ -52,14 +52,28 @@ UserSchema.statics.findUser = function (email, password, cb) {
     });
 };
 
-UserSchema.statics.findUserById = function (id, cb) {
-    this.findOne({ _id: id }, (err, user) => {
-        if (user) {
-            cb(null, user);
-        } else {
-            cb(ERR_USER_DOESNT_EXIST, null);
-        }
-    });
+UserSchema.statics.findUserByEmailAndPassword = async function (email, password) {
+    try {
+        const user = await this.findOne({ email: email });
+        if (user && user.passwordCompare(password))
+            return user;
+        else
+            throw { message: ERR_USER_LOGIN };
+    } catch (err) {
+        throw err.message;
+    }
+};
+
+UserSchema.statics.findUserById = async function (id) {
+    try {
+        const user = await this.findById(id);
+        if (user)
+            return user;
+        else
+            throw { message: ERR_USER_DOESNT_EXIST };
+    } catch (err) {
+        throw err.message;
+    }
 };
 
 UserSchema.statics.findUserByEmail = function (email, cb) {
@@ -82,14 +96,16 @@ UserSchema.statics.findUsersByName = function (name, cb) {
     });
 };
 
-UserSchema.statics.saveUser = function (user, cb) {
-    this.findUserByEmail(user.email, (err, oldUser) => {
-        if (oldUser) {
-            cb(ERR_USER_ALREADY_EXIST, null);
-        } else {
-            user.save(cb);
-        }
-    });
+UserSchema.statics.saveUser = async function (user) {
+    try{
+        const oldUser = await this.findOne({ email: user.email });
+        if(!oldUser)
+            return user.save();
+        else
+            throw { message: ERR_USER_ALREADY_EXIST };
+    } catch (err) {
+        throw err.message;
+    }
 };
 
 // METHODS
@@ -119,14 +135,14 @@ UserSchema.methods.setAvatarUrl = function (avatarUrl) {
 };
 
 UserSchema.methods.addRoom = function (id) {
-    if(!this.myRooms.includes(id)){
+    if (!this.myRooms.includes(id)) {
         this.myRooms.push(new ObjectId(id));
         return this.save();
     }
 };
 
 UserSchema.methods.addFavoriteRoom = function (id) {
-    if(!this.favoriteRooms.includes(id)){
+    if (!this.favoriteRooms.includes(id)) {
         this.favoriteRooms.push(ObjectId(id));
         return this.save();
     }

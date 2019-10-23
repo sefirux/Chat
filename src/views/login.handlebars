@@ -5,21 +5,12 @@
                 <div class="card-title center-align">
                     <h4>{{title}}</h4>
                 </div>
-                <form action={{action}} method="POST" {{#if signup}}enctype="multipart/form-data"{{else}}enctype="application/x-www-form-urlencoded"{{/if}}>
+                <form action={{action}} method="POST" enctype="application/x-www-form-urlencoded">
                     {{#if signup}}
                     <div class="row">
                         <div class="input-field col s12 m12">
                             <input type="text" name="name" id="name">
                             <label for="name">Name</label>
-                        </div>
-                    </div>
-                    <div class="file-field input-field">
-                        <div class="btn indigo accent-3">
-                            <span>Avatar</span>
-                            <input id="avatar" name="avatar" type="file">
-                        </div>
-                        <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text">
                         </div>
                     </div>
                     {{/if}}

@@ -6,21 +6,12 @@
                     <h4>New room!</h4>
                 </div>
                 <div class="row">
-                    <form id='new-room-form' action="/room/new" method="POST" enctype="multipart/form-data" class="col s12">
+                    <form id='new-room-form' action="/room/new" method="POST" enctype="application/x-www-form-urlencoded" class="col s12">
                         <div class="row">
                             <div class="input-field col s12">
                                 <input placeholder="My room" id="new-room-name" name="name" type="text"
                                     class="validate">
                                 <label for="disabled">Room name</label>
-                            </div>
-                        </div>
-                        <div class="file-field input-field">
-                            <div class="btn indigo accent-3">
-                                <span>Cover page</span>
-                                <input id="front" name="front" type="file">
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text">
                             </div>
                         </div>
                         <div class="row">

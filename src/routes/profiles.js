@@ -1,66 +1,58 @@
-const Router = require('express').Router();
-const { User, Room } = require('../libs/ChatDatabase');
+const myAccount = require('../middlewares/myAccount');
+const router = require('express').Router();
+const User = require('../models/User');
 
-Router.get('/id/:id', (req, res) => {
+router.use((req, res, next) => {
     if (!req.session.user) {
         res.redirect('/');
-        return;
+    } else {
+        next();
     }
-    User.findUserById(req.params.id, async (err, user) => {
-        if (err) {
-            req.session.error = err;
-            res.redirect('/');
-            return;
-        }
+})
 
-        if (req.params.id === req.session.user._id) {
+router.get('/id/:id', async (req, res) => {
+    try {
+        const user = User.findUserById(req.params.id);
+        if (req.params.id === req.session.user._id)
             res.render('my-profile', {
                 layout: 'logged-user',
                 user: user,
             });
-        } else {
+        else
             res.render('profile', {
                 layout: 'logged-user',
                 user: user,
             });
-        }
-    });
-});
-
-Router.get('/id/:id/config', (req, res) => {
-    if (!(req.session.user && req.params.id === req.session.user._id)) {
+    } catch (err) {
+        req.session.error = err;
         res.redirect('/');
-        return;
     }
-    User.findById(req.params.id, (err, user) => {
-        if (err) {
-            req.session.error = err.message;
-            res.redirect('/');
-            return;
-        }
+})
+
+router.get('/id/:id/config', myAccount, async (req, res) => {
+    try {
+        const user = await User.findUserById(req.params.id);
         res.render('profile-config', {
             layout: 'logged-user',
             user: user
         });
-    });
-});
-
-Router.post('/id/:id/config', (req, res) => {
-    if (!(req.session.room && req.params.id === req.session.room._id)) {
+    } catch (err) {
+        req.session.error = err;
         res.redirect('/');
-        return;
     }
-    User.findById(req.params.id, (err, user) => {
-        if (err) {
-            req.session.error = err.message;
-            res.redirect('/');
-            return;
-        }
+})
+
+router.post('/id/:id/config', myAccount, async (req, res) => {
+    try {
+        const user = await User.findUserById(req.params.id);
         res.render('profile-config', {
             layout: 'logged-user',
             user: user
         });
-    });
-});
+    } catch (err) {
+        req.session.error = err;
+        res.redirect('/');
+    }
+})
 
-module.exports = Router;
+module.exports = router;

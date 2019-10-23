@@ -1,4 +1,6 @@
-const { Room, User, Message } = require('../libs/ChatDatabase');
+const Message = require('../models/Message');
+const Room = require('../models/Room');
+const User = require('../models/User');
 
 const DEFAULT_AVATAR = '/default/avatar-default.png';
 const DEFAULT_PAGE_COVER = '/default/front-default.png';
