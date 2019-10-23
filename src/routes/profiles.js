@@ -16,7 +16,8 @@ router.get('/id/:id', async (req, res) => {
         if (req.params.id === req.session.user._id)
             res.render('my-profile', {
                 layout: 'logged-user',
-                user: user,
+                user: req.session.user,
+                profile: user,
             });
         else
             res.render('profile', {

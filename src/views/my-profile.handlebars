@@ -1,16 +1,16 @@
 <div class="parallax-container valign-wrapper">
-    {{#if user.coverUrl}}
-    <div class="parallax col s12"><img class="responsive-img" src="{{user.coverUrl}}"></div>
+    {{#if profile.coverUrl}}
+    <div class="parallax col s12"><img class="responsive-img" src="{{profile.coverUrl}}"></div>
     {{else}}
     <div class="parallax col s12"><img class="responsive-img" src="/default/front-default.png"></div>
     {{/if}}
 
-    {{#if user.coverUrl}}
-    <img class="profile-avatar circle" src="{{user.avatarUrl}}">
-    <h2 class="profile-name white-text">{{user.name}}</h2>
+    {{#if profile.coverUrl}}
+    <img class="profile-avatar circle" src="{{profile.avatarUrl}}">
+    <h2 class="profile-name white-text">{{profile.name}}</h2>
     {{else}}
     <img class="profile-avatar circle" src="/default/avatar-default.png">
-    <h2 class="profile-name white-text">{{user.name}}</h2>
+    <h2 class="profile-name white-text">{{profile.name}}</h2>
     {{/if}}
 </div>
 <div class="container">
@@ -45,7 +45,7 @@
     </div>
 </div>
 <div class="fixed-action-btn">
-    <a href="/profile/id/{{user.id}}/config" class="btn-floating btn-large"><i class="large material-icons">mode_edit</i></a>
+    <a href="/profile/id/{{profile.id}}/config" class="btn-floating btn-large"><i class="large material-icons">mode_edit</i></a>
 </div>
 
 <script type="application/javascript" src="/socket.io/socket.io.js"></script>
