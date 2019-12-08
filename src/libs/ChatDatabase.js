@@ -1,6 +1,4 @@
-const dbPort = 27017;
-const dbName = 'roomdb';
-const dbURI = `mongodb://localhost:${dbPort}/${dbName}`;
+const dbURI = process.env.DATABASE_URI;
 const dbConfig = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
